@@ -91,4 +91,32 @@ export class PrismaMatchRepository
       total,
     };
   }
+
+  async findById(id: number): Promise<MatchEntity | null> {
+    const match = await this.prisma.match.findUnique({
+      where: { id },
+      include: {
+        homeTeam: { include: { country: true } },
+        awayTeam: { include: { country: true } },
+      },
+    });
+
+    if (!match || !match.homeTeam.country || !match.awayTeam.country) return null;
+
+    return MatchEntity.fromPrimitives({
+      id: match.id,
+      drawId: match.drawId,
+      homeTeam: {
+        id: match.homeTeam.id,
+        name: match.homeTeam.name,
+        country: { id: match.homeTeam.country.id, name: match.homeTeam.country.name },
+      },
+      awayTeam: {
+        id: match.awayTeam.id,
+        name: match.awayTeam.name,
+        country: { id: match.awayTeam.country.id, name: match.awayTeam.country.name },
+      },
+      matchDay: match.matchDay,
+    });
+  }
 }

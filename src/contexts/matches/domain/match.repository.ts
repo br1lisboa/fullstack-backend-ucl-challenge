@@ -20,4 +20,5 @@ export interface MatchRepository {
     filters: MatchFilters,
     pagination: PaginationParams
   ): Promise<PaginatedMatches>;
+  findById(id: number): Promise<MatchEntity | null>;
 }
