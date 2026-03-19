@@ -50,6 +50,13 @@ export class SearchMatchesService {
   ) {}
 
   async run(params: SearchMatchesParams): Promise<SearchMatchesResult> {
+    if (params.page !== undefined && params.page < 1) {
+      throw new Error("Page must be greater than 0");
+    }
+    if (params.limit !== undefined && (params.limit < 1 || params.limit > 100)) {
+      params.limit = undefined;
+    }
+
     const page = params.page || 1;
     const limit = params.limit || 10;
 
