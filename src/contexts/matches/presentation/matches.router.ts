@@ -28,7 +28,7 @@ matchesRouter.get(
       return res.status(200).json(result);
     } catch (error) {
       if (error instanceof ZodError) {
-        return res.status(400).json({ message: error.errors[0].message });
+        return res.status(400).json({ message: error.issues[0].message });
       }
       if (error instanceof Error) {
         return res.status(400).json({ message: error.message });

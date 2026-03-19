@@ -60,3 +60,6 @@ dev.db
 *.bak
 *.bak2
 *.bak3
+
+# Test reports
+unit.xml
