@@ -12,6 +12,13 @@ import { DrawRepository } from "../../contexts/draw/domain/draw.repository.js";
 import { PrismaDrawRepository } from "../../contexts/draw/infrastructure/prisma-draw.repository.js";
 import { CreateDrawService } from "../../contexts/draw/application/create-draw.service.js";
 import { SearchCurrentDrawService } from "../../contexts/draw/application/search-current-draw.service.js";
+import { DrawStatisticsService } from "../../contexts/draw/application/draw-statistics.service.js";
+
+// Teams Context
+import { TeamRepository } from "../../contexts/teams/domain/team.repository.js";
+import { PrismaTeamRepository } from "../../contexts/teams/infrastructure/prisma-team.repository.js";
+import { SearchTeamsService } from "../../contexts/teams/application/search-teams.service.js";
+import { SearchTeamByIdService } from "../../contexts/teams/application/search-team-by-id.service.js";
 
 const container = new Container();
 
@@ -23,5 +30,11 @@ container.bind<SearchMatchesService>(TYPES.SearchMatchesService).to(SearchMatche
 container.bind<DrawRepository>(TYPES.DrawRepository).to(PrismaDrawRepository);
 container.bind<CreateDrawService>(TYPES.CreateDrawService).to(CreateDrawService);
 container.bind<SearchCurrentDrawService>(TYPES.SearchCurrentDrawService).to(SearchCurrentDrawService);
+container.bind<DrawStatisticsService>(TYPES.DrawStatisticsService).to(DrawStatisticsService);
+
+// Teams Context Bindings
+container.bind<TeamRepository>(TYPES.TeamRepository).to(PrismaTeamRepository);
+container.bind<SearchTeamsService>(TYPES.SearchTeamsService).to(SearchTeamsService);
+container.bind<SearchTeamByIdService>(TYPES.SearchTeamByIdService).to(SearchTeamByIdService);
 
 export { container };

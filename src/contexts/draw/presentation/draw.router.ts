@@ -3,6 +3,7 @@ import { container } from "../../../shared/container/container.js";
 import { TYPES } from "../../../shared/container/types.js";
 import { CreateDrawService } from "../application/create-draw.service.js";
 import { SearchCurrentDrawService } from "../application/search-current-draw.service.js";
+import { DrawStatisticsService } from "../application/draw-statistics.service.js";
 import { DrawAlreadyExistsError } from "../domain/exceptions/draw-already-exists.error.js";
 import { DrawRepository } from "../domain/draw.repository.js";
 
@@ -46,6 +47,29 @@ drawRouter.get(
       const drawPrimitives = draw.toPrimitives();
 
       return res.status(200).json(drawPrimitives);
+    } catch (error) {
+      if (error instanceof Error) {
+        return res.status(400).json({ message: error.message });
+      }
+      next(error);
+    }
+  }
+);
+
+drawRouter.get(
+  "/draw/statistics",
+  async (_req: Request, res: Response, next: NextFunction) => {
+    try {
+      const service = container.get<DrawStatisticsService>(
+        TYPES.DrawStatisticsService
+      );
+      const stats = await service.run();
+
+      if (!stats) {
+        return res.status(404).json({ message: "No draw found" });
+      }
+
+      return res.status(200).json(stats);
     } catch (error) {
       if (error instanceof Error) {
         return res.status(400).json({ message: error.message });

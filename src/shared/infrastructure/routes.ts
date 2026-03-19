@@ -1,6 +1,7 @@
 import { Express } from "express";
 import { drawRouter } from "../../contexts/draw/presentation/draw.router.js";
 import { matchesRouter } from "../../contexts/matches/presentation/matches.router.js";
+import { teamsRouter } from "../../contexts/teams/presentation/teams.router.js";
 
 export function registerRoutes(app: Express): void {
   app.get("/health", (_req, res) => {
@@ -13,4 +14,5 @@ export function registerRoutes(app: Express): void {
 
   app.use(drawRouter);
   app.use(matchesRouter);
+  app.use(teamsRouter);
 }
