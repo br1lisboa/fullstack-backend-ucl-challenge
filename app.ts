@@ -6,6 +6,7 @@ import path, { dirname } from "path";
 import { fileURLToPath } from "url";
 import { initializeDatabase } from "./src/shared/infrastructure/database.js";
 import { registerRoutes } from "./src/shared/infrastructure/routes.js";
+import { registerSwagger } from "./src/shared/infrastructure/swagger.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -26,5 +27,8 @@ initializeDatabase();
 
 // Register application routes
 registerRoutes(app);
+
+// Register Swagger documentation
+registerSwagger(app);
 
 export default app;
