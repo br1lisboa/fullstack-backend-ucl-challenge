@@ -1,0 +1,250 @@
+{
+  "info": {
+    "name": "Champions League Draw API",
+    "description": "API for the Champions League Swiss Round draw — 36 teams, 8 match days, 144 matches.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8000"
+    }
+  ],
+  "item": [
+    {
+      "name": "Health",
+      "item": [
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/health"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Draw",
+      "item": [
+        {
+          "name": "Create Draw",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/draw"
+          }
+        },
+        {
+          "name": "Get Current Draw",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/draw"
+          }
+        },
+        {
+          "name": "Delete Draw",
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/draw"
+          }
+        },
+        {
+          "name": "Get Draw Statistics",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/draw/statistics"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Matches",
+      "item": [
+        {
+          "name": "List Matches (defaults)",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/matches"
+          }
+        },
+        {
+          "name": "List Matches (paginated)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/matches?page=1&limit=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["matches"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "20" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Filter by Team",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/matches?teamId=1",
+              "host": ["{{baseUrl}}"],
+              "path": ["matches"],
+              "query": [
+                { "key": "teamId", "value": "1" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Filter by Match Day",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/matches?matchDay=3",
+              "host": ["{{baseUrl}}"],
+              "path": ["matches"],
+              "query": [
+                { "key": "matchDay", "value": "3" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Filter by Match Day Range",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/matches?matchDayFrom=2&matchDayTo=5&limit=100",
+              "host": ["{{baseUrl}}"],
+              "path": ["matches"],
+              "query": [
+                { "key": "matchDayFrom", "value": "2" },
+                { "key": "matchDayTo", "value": "5" },
+                { "key": "limit", "value": "100" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Filter by Country",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/matches?countryId=1&limit=50",
+              "host": ["{{baseUrl}}"],
+              "path": ["matches"],
+              "query": [
+                { "key": "countryId", "value": "1" },
+                { "key": "limit", "value": "50" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Custom Sort (by homeTeam desc)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/matches?sortBy=homeTeam&sortOrder=desc&limit=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["matches"],
+              "query": [
+                { "key": "sortBy", "value": "homeTeam" },
+                { "key": "sortOrder", "value": "desc" },
+                { "key": "limit", "value": "20" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Combined Filters",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/matches?teamId=1&matchDay=1",
+              "host": ["{{baseUrl}}"],
+              "path": ["matches"],
+              "query": [
+                { "key": "teamId", "value": "1" },
+                { "key": "matchDay", "value": "1" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Match by ID",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/matches/1"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Teams",
+      "item": [
+        {
+          "name": "List All Teams",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/teams"
+          }
+        },
+        {
+          "name": "Get Team by ID",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/teams/1"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Validation (expect 400)",
+      "item": [
+        {
+          "name": "Invalid page (0)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/matches?page=0",
+              "host": ["{{baseUrl}}"],
+              "path": ["matches"],
+              "query": [
+                { "key": "page", "value": "0" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Invalid limit (101)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/matches?limit=101",
+              "host": ["{{baseUrl}}"],
+              "path": ["matches"],
+              "query": [
+                { "key": "limit", "value": "101" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Invalid matchDay (9)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/matches?matchDay=9",
+              "host": ["{{baseUrl}}"],
+              "path": ["matches"],
+              "query": [
+                { "key": "matchDay", "value": "9" }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
