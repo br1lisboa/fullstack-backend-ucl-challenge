@@ -15,6 +15,35 @@ export const SearchMatchesQuerySchema = z.object({
     .refine((val) => val === undefined || (val >= 1 && val <= 8), {
       message: "Match day must be between 1 and 8",
     }),
+  matchDayFrom: z
+    .string()
+    .optional()
+    .transform((val) => (val ? parseInt(val, 10) : undefined))
+    .refine((val) => val === undefined || (val >= 1 && val <= 8), {
+      message: "matchDayFrom must be between 1 and 8",
+    }),
+  matchDayTo: z
+    .string()
+    .optional()
+    .transform((val) => (val ? parseInt(val, 10) : undefined))
+    .refine((val) => val === undefined || (val >= 1 && val <= 8), {
+      message: "matchDayTo must be between 1 and 8",
+    }),
+  countryId: z
+    .string()
+    .optional()
+    .transform((val) => (val ? parseInt(val, 10) : undefined))
+    .refine((val) => val === undefined || val > 0, {
+      message: "Country ID must be greater than 0",
+    }),
+  sortBy: z
+    .enum(["matchDay", "homeTeam", "awayTeam", "id"])
+    .optional()
+    .default("matchDay"),
+  sortOrder: z
+    .enum(["asc", "desc"])
+    .optional()
+    .default("asc"),
   page: z
     .string()
     .optional()

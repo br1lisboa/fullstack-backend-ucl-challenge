@@ -47,7 +47,8 @@ describe('SearchMatchesService', () => {
       // Assert
       expect(mockRepository.findAll).toHaveBeenCalledWith(
         {},
-        { page: 1, limit: 10 }
+        { page: 1, limit: 10 },
+        { sortBy: "matchDay", sortOrder: "asc" }
       );
       expect(result.matches).toHaveLength(1);
       expect(result.pagination).toEqual({
@@ -72,7 +73,8 @@ describe('SearchMatchesService', () => {
       // Assert
       expect(mockRepository.findAll).toHaveBeenCalledWith(
         { teamId },
-        { page: 1, limit: 10 }
+        { page: 1, limit: 10 },
+        { sortBy: "matchDay", sortOrder: "asc" }
       );
     });
 
@@ -90,7 +92,8 @@ describe('SearchMatchesService', () => {
       // Assert
       expect(mockRepository.findAll).toHaveBeenCalledWith(
         { matchDay },
-        { page: 1, limit: 10 }
+        { page: 1, limit: 10 },
+        { sortBy: "matchDay", sortOrder: "asc" }
       );
     });
 
@@ -109,7 +112,8 @@ describe('SearchMatchesService', () => {
       // Assert
       expect(mockRepository.findAll).toHaveBeenCalledWith(
         {},
-        { page: 2, limit: 20 }
+        { page: 2, limit: 20 },
+        { sortBy: "matchDay", sortOrder: "asc" }
       );
       expect(result.pagination.totalPages).toBe(3);
     });
@@ -141,7 +145,8 @@ describe('SearchMatchesService', () => {
       // Assert
       expect(mockRepository.findAll).toHaveBeenCalledWith(
         {},
-        { page: 1, limit: 10 }
+        { page: 1, limit: 10 },
+        { sortBy: "matchDay", sortOrder: "asc" }
       );
     });
 
@@ -163,7 +168,8 @@ describe('SearchMatchesService', () => {
       // Assert
       expect(mockRepository.findAll).toHaveBeenCalledWith(
         { teamId, matchDay },
-        { page: 3, limit: 15 }
+        { page: 3, limit: 15 },
+        { sortBy: "matchDay", sortOrder: "asc" }
       );
       expect(result.pagination.totalPages).toBe(7);
     });

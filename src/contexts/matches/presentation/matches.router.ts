@@ -26,6 +26,11 @@ matchesRouter.get(
       const result: SearchMatchesResponse = await searchMatchesService.run({
         teamId: parsed.teamId,
         matchDay: parsed.matchDay,
+        matchDayFrom: parsed.matchDayFrom,
+        matchDayTo: parsed.matchDayTo,
+        countryId: parsed.countryId,
+        sortBy: parsed.sortBy,
+        sortOrder: parsed.sortOrder,
         page: parsed.page,
         limit: parsed.limit,
       });
