@@ -18,8 +18,9 @@ npm run seed
 npm run dev          # http://localhost:8000
 
 # Tests
-npm run test:unit    # Vitest (23 tests)
-npm test             # Mocha + Chai E2E (38 tests)
+npm run test:unit    # Vitest (34 unit tests)
+npm test             # Mocha + Chai E2E (38 integration tests)
+npm run test:load    # Autocannon load tests (8 scenarios)
 ```
 
 ---
@@ -44,7 +45,12 @@ npm test             # Mocha + Chai E2E (38 tests)
 | Param | Tipo | Descripcion |
 |-------|------|-------------|
 | `teamId` | int | Filtrar por equipo (home o away) |
-| `matchDay` | int (1-8) | Filtrar por jornada |
+| `matchDay` | int (1-8) | Filtrar por jornada exacta |
+| `matchDayFrom` | int (1-8) | Filtrar desde jornada (rango) |
+| `matchDayTo` | int (1-8) | Filtrar hasta jornada (rango) |
+| `countryId` | int | Filtrar por pais (equipos home o away) |
+| `sortBy` | string | Ordenar por: `matchDay`, `homeTeam`, `awayTeam`, `id` (default: `matchDay`) |
+| `sortOrder` | string | `asc` o `desc` (default: `asc`) |
 | `page` | int (>0) | Pagina (default: 1) |
 | `limit` | int (1-100) | Resultados por pagina (default: 10) |
 
@@ -134,9 +140,31 @@ Agregue `findById()` a la interfaz `MatchRepository` y su implementacion en `Pri
 
 Servicio que calcula estadisticas a partir de los datos existentes: total de partidos, partidos por jornada, y distribucion de equipos por pais. Requiere un draw activo (404 si no existe).
 
+### Filtros adicionales en GET /matches
+
+Extendi el endpoint con tres capacidades nuevas:
+
+- **Rango de jornadas** (`matchDayFrom`, `matchDayTo`): usa `gte`/`lte` en Prisma. Se ignora si `matchDay` exacto esta presente.
+- **Filtro por pais** (`countryId`): filtra matches donde el homeTeam o awayTeam pertenezca a ese pais. Usa `OR` en la relacion de Prisma.
+- **Ordenamiento** (`sortBy`, `sortOrder`): soporta ordenar por jornada, equipo local, equipo visitante o ID. El orderBy se mapea dinamicamente a la query de Prisma incluyendo ordenamiento por relaciones (`homeTeam.name`).
+
+Los tres se validan con Zod en el schema y se propagan por la cadena: dto → service → repository → Prisma query.
+
 ### Swagger / OpenAPI
 
 Agregue `swagger-jsdoc` + `swagger-ui-express` montado en `/api-docs`. Defini los schemas inline en el archivo de configuracion en vez de usar JSDoc annotations en cada router, porque el proyecto no tenia ese patron establecido y no queria agregar ruido a los archivos existentes.
+
+### Diagrama de arquitectura
+
+Documentado en `api-docs/ARCHITECTURE.md` con diagramas ASCII: overview del sistema, estructura de cada bounded context, flujo de un request, y esquema de base de datos.
+
+### Coleccion Postman
+
+`api-docs/postman_collection.json` — importable en Postman o Insomnia. Incluye 16 requests organizados por categoria (Health, Draw, Matches, Teams, Validation) con variable `baseUrl` configurable.
+
+### Tests de carga
+
+`npm run test:load` ejecuta 8 escenarios con autocannon contra todos los endpoints de lectura. Mide requests/sec, latencia promedio, p99 y errores. Corre un servidor en puerto separado (8099) con un draw pre-creado.
 
 ---
 
