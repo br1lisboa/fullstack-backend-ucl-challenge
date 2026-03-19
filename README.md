@@ -1,329 +1,185 @@
-# Champions League Draw API - Backend Challenge
+# Champions League Draw API
 
-## 📋 Descripción General
+API REST para el sorteo de la Champions League en formato Swiss Round: 36 equipos, 8 jornadas, 144 partidos.
 
-Este challenge evalúa tu capacidad para **entender, corregir y extender** un sistema backend existente, aplicando buenas prácticas de arquitectura, diseño y calidad de código.
-
-El dominio del problema es el **sorteo de la Champions League en su nuevo formato**, donde 36 equipos participan en una liga única y cada uno juega 8 partidos bajo reglas específicas.
+**Autor:** Bruno Lisboa
 
 ---
 
-## 🧩 Contexto del Dominio
-
-### Reglas del Sorteo
-
-- **36 equipos** participan del torneo
-- Cada equipo juega:
-  - **8 partidos** en total
-  - **4 como local** y **4 como visitante**
-- **No puede haber partidos repetidos** entre los mismos equipos
-- **Restricciones de país:**
-  - Dos equipos del mismo país **NO pueden enfrentarse**
-  - Un equipo **NO puede jugar contra más de 2 equipos del mismo país**
-- Los partidos se distribuyen en **8 jornadas (match days)**
-  - Cada equipo juega **1 partido por jornada**
-  - Cada jornada tiene **18 partidos** (36 equipos / 2)
-
----
-
-## ⚠️ Estado Actual del Proyecto
-
-El proyecto que recibes tiene:
-
-✅ **Implementado:**
-- Estructura base con arquitectura de bounded contexts
-- Conexión a base de datos (SQLite con Prisma)
-- Modelos de datos (Team, Country, Match, Draw)
-- Algoritmo de generación de sorteo
-- Algunos endpoints REST
-- Suite de tests (unitarios e integración)
-
-❌ **Problemas conocidos:**
-- El código tiene **bugs intencionales** que debes encontrar y corregir
-- Faltan **validaciones importantes**
-- Algunos **endpoints no están implementados**
-- Los **tests están fallando** (12 tests fallan actualmente)
-
----
-
-## 🎯 Tareas Obligatorias
-
-### 1. Corregir Bugs Existentes
-
-Debes identificar y corregir los siguientes problemas:
-
-#### 🐛 Bug en DrawService
-- El algoritmo permite más de 2 oponentes del mismo país
-
-#### 🐛 Bug en Tipos de Datos
-- Hay un problema de tipos en el parámetro `drawId`
-
-#### 🐛 Validaciones Faltantes en CreateDrawService
-- No valida si ya existe un sorteo antes de crear uno nuevo
-
-#### 🐛 Manejo de Errores en draw.router.ts
-- No maneja correctamente el error 409 (Conflict)
-
-#### 🐛 Validaciones Faltantes en SearchMatchesService
-- Faltan validaciones de parámetros de paginación
-
-#### 🐛 Validación de Query Params en matches.router.ts
-- Falta usar el schema de validación en el router
-
-### 2. Implementar Endpoints Faltantes
-
-Debes crear los siguientes endpoints que **NO existen** actualmente:
-
-#### DELETE /draw
-- Eliminar el sorteo actual
-- **Responses:**
-  - `200`: Draw eliminado exitosamente
-  - `404`: No existe un draw para eliminar
-- Debe eliminar en cascada: Draw, DrawTeamPot, Match
-
-#### GET /health
-- Health check del servicio
-- **Response 200:**
-  ```json
-  {
-    "status": "ok",
-    "service": "champions-league-draw-api",
-    "timestamp": "2024-01-15T10:30:00.000Z"
-  }
-  ```
-
-### 3. Hacer Pasar Todos los Tests
-
-Actualmente hay **12 tests fallando**:
-- 1 test unitario en `draw-assigner.service.test.ts`
-- 3 tests unitarios en `search-matches.service.test.ts`
-- 4 tests E2E para los nuevos endpoints
-- 4 tests E2E de validaciones
-
-**Objetivo:** Todos los tests deben pasar (✅ 100% passing)
-
----
-
-## 🔧 Funcionalidades Requeridas
-
-### A. Sortear los partidos
-- [x] Ejecutar el sorteo completo
-- [x] Persistir el resultado
-- [ ] **FALTA**: Evitar ejecutar el sorteo más de una vez (respuesta 409)
-
-### B. Obtener partidos
-- [x] Calendario general con paginación
-- [x] Filtros por equipo y fecha
-- [ ] **SUGERIDO**: Agregar filtros adicionales (local/visitante, por país, etc.)
-
-### C. Gestión del sorteo
-- [ ] Implementar `DELETE /draw`: Eliminar sorteo actual
-
-### D. Health Check
-- [ ] Implementar `GET /health`: Verificar estado del servicio
-
----
-
-## 🧹 Validaciones y Manejo de Errores
-
-### Implementar:
-
-- [ ] Validación de tipos (usando Zod)
-- [ ] Validación de rangos (IDs válidos, matchDays 1-8, paginación, etc.)
-- [ ] Validación de reglas de negocio
-- [ ] Manejo de errores apropiado en los routers
-- [ ] Códigos HTTP apropiados:
-  - `200 OK`, `201 Created`
-  - `400 Bad Request`, `404 Not Found`, `409 Conflict`
-  - `500 Internal Server Error`
-
-### Ejemplos de validaciones faltantes:
-
-- Retornar 409 si ya existe un sorteo antes de crear uno nuevo
-- Validar parámetros de paginación en `SearchMatchesService`
-- Usar el schema de validación en `matches.router.ts`
-- Manejar correctamente el error 409 en `draw.router.ts`
-
----
-
-## 📈 Arquitectura y Diseño
-
-### Evaluar y mejorar:
-
-- Modularización y separación de responsabilidades
-- Principios SOLID
-- Bajo acoplamiento entre capas
-- Preparación para escalar el sistema
-- Decisiones técnicas justificables
-
----
-
-## 🌟 Mejoras Opcionales (Suma Puntos)
-
-Si quieres destacarte, puedes agregar:
-
-### 📊 Nuevos Endpoints
-- `GET /teams` - Listar todos los equipos
-- `GET /teams/:id` - Detalle de un equipo con sus partidos
-- `GET /matches/:id` - Detalle de un partido específico
-- `GET /draw/statistics` - Estadísticas del sorteo
-
-### 🔍 Filtros Adicionales
-- Filtrar partidos por rango de jornadas (matchDays)
-- Filtrar por país (todos los partidos de equipos de un país)
-- Ordenamiento personalizado (por jornada, equipo, etc.)
-
-### 📝 Documentación
-- Documentar la API con Swagger/OpenAPI
-- Diagrams de arquitectura
-- Colección de Postman/Insomnia
-
-### 🧪 Testing
-- Aumentar cobertura de tests
-- Tests de carga/performance
-- Tests de casos edge
-
----
-
-## ✅ Criterios de Evaluación
-
-| Criterio | Qué evaluamos |
-|----------|---------------|
-| **Correctitud** | Todos los tests pasan, bugs corregidos, reglas del dominio respetadas |
-| **Arquitectura** | Separación de responsabilidades, SOLID, bajo acoplamiento |
-| **Código** | Legibilidad, expresividad, consistencia, buenas prácticas |
-| **Testing** | Casos relevantes, claridad, cobertura |
-| **Mejoras** | Iniciativa, creatividad, valor agregado |
-
----
-
-## 🚀 Cómo Empezar
-
-### 1. Setup del Proyecto
+## Setup
 
 ```bash
-# Instalar dependencias
 npm install
-
-# Generar cliente Prisma
 npx prisma generate
-
-# Ejecutar migraciones
 npx prisma migrate dev
+npm run seed
 
-# Seed de datos iniciales
-npx prisma db seed
-```
-
-### 2. Ejecutar Tests
-
-```bash
-# Tests unitarios
-npm run test:unit
-
-# Tests de integración
-npm test
-
-# Ver cobertura
-npm run test:coverage
-```
-
-### 3. Ejecutar el Servidor
-
-```bash
 # Desarrollo
-npm run dev
+npm run dev          # http://localhost:8000
 
-# Producción
-npm run build
-npm start
-```
-
-### 4. Verificar el Estado Actual
-
-```bash
-# Debe mostrar ~12 tests fallando
-npm test
-
-# Debe mostrar 1 test fallando
-npm run test:unit
+# Tests
+npm run test:unit    # Vitest (23 tests)
+npm test             # Mocha + Chai E2E (38 tests)
 ```
 
 ---
 
-## 📦 Entregable
+## API Endpoints
 
-### Qué debes entregar:
+| Method | Path | Descripcion |
+|--------|------|-------------|
+| GET | `/health` | Health check del servicio |
+| POST | `/draw` | Ejecutar el sorteo (201 / 409 si ya existe) |
+| GET | `/draw` | Obtener el sorteo actual (200 / 404) |
+| DELETE | `/draw` | Eliminar el sorteo (200 / 404) |
+| GET | `/draw/statistics` | Estadisticas del sorteo |
+| GET | `/matches` | Listar partidos con filtros y paginacion |
+| GET | `/matches/:id` | Detalle de un partido |
+| GET | `/teams` | Listar los 36 equipos |
+| GET | `/teams/:id` | Detalle de equipo con sus partidos |
+| GET | `/api-docs` | Documentacion Swagger/OpenAPI |
 
-1. **Código fuente:**
-   - Fork o clon del repositorio con tus cambios
-   - Commits con mensajes claros y descriptivos
-   - Branch `main` o `solution` con la solución final
+### Query params de GET /matches
 
-2. **Documentación (README.md):**
-   - Cómo levantar el proyecto
-   - Decisiones técnicas tomadas
-   - Supuestos realizados
-   - Bugs encontrados y cómo los solucionaste
-   - Mejoras implementadas (si las hay)
-
-3. **Tests:**
-   - Todos los tests existentes deben pasar
-   - Nuevos tests para código agregado (deseable)
-
-### Formato de entrega:
-- Link a repositorio GitHub/GitLab/Bitbucket
-
----
-
-## 🧠 Qué Buscamos Evaluar
-
-> No buscamos una solución perfecta.
->
-> Buscamos **criterio técnico**, **capacidad de análisis**, **calidad de diseño** y **habilidad para trabajar con código existente**.
-
-### Valoramos especialmente:
-
-- ✅ Capacidad para entender código ajeno
-- ✅ Identificación sistemática de problemas
-- ✅ Soluciones elegantes y mantenibles
-- ✅ Balance entre pragmatismo y calidad
-- ✅ Comunicación clara de decisiones técnicas
-
-### NO buscamos:
-
-- ❌ Over-engineering
-- ❌ Reescribir todo desde cero
-- ❌ Agregar librerías innecesarias
-- ❌ Optimizaciones prematuras
+| Param | Tipo | Descripcion |
+|-------|------|-------------|
+| `teamId` | int | Filtrar por equipo (home o away) |
+| `matchDay` | int (1-8) | Filtrar por jornada |
+| `page` | int (>0) | Pagina (default: 1) |
+| `limit` | int (1-100) | Resultados por pagina (default: 10) |
 
 ---
 
-## 📚 Recursos
+## Bugs encontrados y soluciones
 
-### Tecnologías del Proyecto
+### 1. MAX_COUNTRY_OPPONENTS incorrecto
+
+**Archivo:** `src/contexts/draw/domain/application/draw-assigner.service.ts`
+
+**Problema:** La constante `MAX_COUNTRY_OPPONENTS` estaba en `3`, pero la regla del dominio dice que un equipo no puede enfrentar a mas de 2 equipos del mismo pais.
+
+**Solucion:** Cambiar de `3` a `2`. El fix es directo porque la constante ya se usaba correctamente en las validaciones del algoritmo; simplemente tenia el valor equivocado.
+
+### 2. Tipo de drawId como string
+
+**Archivo:** `src/contexts/draw/domain/application/draw-assigner.service.ts`
+
+**Problema:** En `generateMatches()` se pasaba `String(drawId)` a `tryGenerateMatches()`, y el parametro estaba tipado como `any`. Esto provocaba que los matches se crearan con `drawId` como string en vez de number, rompiendo la comparacion estricta `match.drawId === 42` en los tests.
+
+**Solucion:** Eliminar la conversion `String()`, pasar `drawId` directamente, y tipar el parametro como `number` en lugar de `any`. Esto mantiene coherencia con la interfaz de `Match.create()` que espera un number.
+
+### 3. CreateDrawService sin validacion de draw existente
+
+**Archivo:** `src/contexts/draw/application/create-draw.service.ts`
+
+**Problema:** El service creaba un nuevo draw sin verificar si ya existia uno. Esto permitia multiples sorteos simultaneos, violando la regla de negocio de un unico sorteo activo.
+
+**Solucion:** Antes de crear, consultar `drawRepository.searchCurrent()`. Si ya existe, lanzar `DrawAlreadyExistsError` (la clase ya existia en `domain/exceptions/` pero no se usaba). Decidi poner la validacion en el application service porque es una regla de negocio, no de presentacion.
+
+### 4. draw.router.ts no maneja error 409
+
+**Archivo:** `src/contexts/draw/presentation/draw.router.ts`
+
+**Problema:** El catch del POST `/draw` trataba todos los errores como 400. El test E2E esperaba un 409 con body `"Draw already exists"` (texto plano, no JSON).
+
+**Solucion:** Agregar un `instanceof DrawAlreadyExistsError` antes del catch generico, respondiendo con `res.status(409).send("Draw already exists")`. Use `send()` en lugar de `json()` porque el test valida `response.text` en vez de `response.body.message`.
+
+### 5. SearchMatchesService sin validacion de paginacion
+
+**Archivo:** `src/contexts/matches/application/search-matches.service.ts`
+
+**Problema:** El service aceptaba cualquier valor de `page` y `limit` sin validar. Los unit tests esperaban que `page: 0` lance error y que `limit: 150` caiga al default.
+
+**Solucion:** Dos comportamientos distintos segun lo que dictan los tests:
+- `page < 1` → throw Error (el test espera un rechazo explicito)
+- `limit` fuera de rango (< 1 o > 100) → reset a `undefined` para que tome el default de 10 (el test espera que el repository reciba `limit: 10`, no un error)
+
+Esta asimetria viene de los tests: el de page espera `rejects.toThrow()` mientras que el de limit espera que el repository se llame con el default. Respete lo que los tests dictaban.
+
+### 6. matches.router.ts no usa schema Zod
+
+**Archivo:** `src/contexts/matches/presentation/matches.router.ts`
+
+**Problema:** Los query params se parseaban manualmente con `Number()` sin ninguna validacion. El schema `SearchMatchesQuerySchema` ya existia en `dtos/search-matches.dto.ts` con validaciones de rango (matchDay 1-8, page > 0, limit 1-100), pero nunca se importaba ni usaba.
+
+**Solucion:** Importar el schema y usarlo con `SearchMatchesQuerySchema.parse(req.query)` al inicio del handler. Agregar un catch especifico para `ZodError` que responda 400 con el mensaje del primer issue. Esto cubre la validacion de matchDay fuera de rango que los tests E2E verifican.
+
+---
+
+## Endpoints implementados
+
+### DELETE /draw
+
+Reutilice `DrawRepository.deleteAll()` que ya existia y hacia el cascade delete correcto (Match → DrawTeamPot → Draw en una transaccion). Solo agregue la verificacion previa con `searchCurrent()` para devolver 404 si no hay draw.
+
+### GET /health
+
+Lo monte directamente en `routes.ts` sin pasar por el container de DI. Un health check no tiene logica de negocio ni estado, asi que no justifica crear un service/repository para algo tan simple.
+
+---
+
+## Mejoras opcionales implementadas
+
+### Teams bounded context (GET /teams, GET /teams/:id)
+
+El directorio `src/contexts/teams/` solo tenia el seed script. Lo extendi con la misma estructura DDD del proyecto: domain (entity + repository interface), infrastructure (PrismaTeamRepository), application (SearchTeamsService, SearchTeamByIdService), y presentation (teamsRouter).
+
+`GET /teams/:id` devuelve el equipo junto con sus 8 partidos, reutilizando el `MatchRepository.findAll()` existente con filtro por teamId.
+
+### GET /matches/:id
+
+Agregue `findById()` a la interfaz `MatchRepository` y su implementacion en `PrismaMatchRepository`. El endpoint valida el ID con Zod y devuelve 404 si no existe.
+
+### GET /draw/statistics
+
+Servicio que calcula estadisticas a partir de los datos existentes: total de partidos, partidos por jornada, y distribucion de equipos por pais. Requiere un draw activo (404 si no existe).
+
+### Swagger / OpenAPI
+
+Agregue `swagger-jsdoc` + `swagger-ui-express` montado en `/api-docs`. Defini los schemas inline en el archivo de configuracion en vez de usar JSDoc annotations en cada router, porque el proyecto no tenia ese patron establecido y no queria agregar ruido a los archivos existentes.
+
+---
+
+## Decisiones tecnicas
+
+### Validacion en dos capas
+
+La validacion de query params ocurre en dos lugares:
+1. **Router** (Zod): transforma strings a numeros y valida rangos (matchDay 1-8, teamId > 0)
+2. **Service**: valida reglas de paginacion (page >= 1, limit en rango)
+
+Esto es una consecuencia de los tests: los unit tests del service esperan que el service valide, y los E2E esperan que el router devuelva 400. Mantener ambas capas asegura que el service sea seguro de usar independientemente del transport.
+
+### No agregar global error handler
+
+El proyecto usa try/catch inline en cada handler. Considere agregar un middleware global de errores, pero el challenge dice explicitamente "no reescribir todo desde cero". Los routers existentes ya tenian su patron, y los nuevos endpoints lo siguen por consistencia.
+
+### Swagger con definicion inline vs JSDoc
+
+Preferi definir la spec de OpenAPI en un solo archivo (`swagger.ts`) en vez de distribuir JSDoc annotations en cada router. Es mas facil de mantener y evita mezclar documentacion con logica de routing.
+
+### Reutilizar DrawRepository.deleteAll()
+
+El metodo ya existia con el orden correcto de borrado en una transaccion. No habia necesidad de reimplementarlo ni de agregar `onDelete: Cascade` al schema de Prisma, lo cual hubiera requerido una migracion.
+
+---
+
+## Supuestos
+
+- El test de 409 espera `response.text` (texto plano), no `response.body.message` (JSON). Adapte la respuesta a lo que el test valida.
+- Para `limit` fuera de rango, el unit test espera un fallback al default en vez de un error. Segui lo que el test dicta.
+- Los endpoints bonus no tienen tests E2E (los tests son read-only). Se validaron manualmente con el servidor corriendo.
+- El schema de Prisma no tiene `onDelete: Cascade` pero `deleteAll()` ya maneja el orden de borrado. No modifique el schema.
+
+---
+
+## Stack
 
 - **Runtime:** Node.js 18+
 - **Lenguaje:** TypeScript
 - **Framework:** Express.js
-- **ORM:** Prisma
-- **Base de datos:** SQLite
-- **Testing:** Vitest + Chai
-- **DI Container:** InversifyJS
-
-### Documentación Útil
-
-- [Prisma Docs](https://www.prisma.io/docs)
-- [Express.js Guide](https://expressjs.com/en/guide/routing.html)
-- [Vitest API](https://vitest.dev/api/)
-- [TypeScript Handbook](https://www.typescriptlang.org/docs/)
-
----
-
-## 🔒 Archivos de Solo Lectura
-
-- `test/*` - No modificar los tests de integración
-
----
-
-**¡Éxito con el challenge! 🚀**
+- **ORM:** Prisma (SQLite + better-sqlite3)
+- **DI:** InversifyJS
+- **Validacion:** Zod
+- **Testing:** Vitest (unit) + Mocha/Chai/ChaiHttp (E2E)
+- **Docs:** Swagger (swagger-jsdoc + swagger-ui-express)
