@@ -1,6 +1,5 @@
 "use client";
 
-import { createContext, useContext } from "react";
 import {
   Table,
   TableBody,
@@ -18,14 +17,6 @@ interface ColumnDef<T> {
   className?: string;
   render: (item: T) => React.ReactNode;
 }
-
-interface DataTableContextValue<T> {
-  columns: ColumnDef<T>[];
-}
-
-const DataTableContext = createContext<DataTableContextValue<unknown>>({
-  columns: [],
-});
 
 interface DataTableProps<T> {
   data: T[] | undefined;
@@ -73,7 +64,10 @@ function DataTableRoot<T>({
   if (!data || data.length === 0) return <EmptyState message={empty} />;
 
   return (
-    <div style={{ opacity: isPending ? 0.7 : 1 }}>
+    <div
+      className="min-h-0 flex-1 overflow-auto rounded-lg border transition-opacity"
+      style={{ opacity: isPending ? 0.7 : 1 }}
+    >
       <Table>
         <TableHeader>
           <TableRow>

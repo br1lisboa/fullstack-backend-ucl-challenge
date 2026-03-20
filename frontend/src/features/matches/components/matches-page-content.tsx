@@ -1,0 +1,43 @@
+"use client";
+
+import { Suspense, useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { SlidersHorizontal } from "lucide-react";
+import { MatchFilters } from "./match-filters";
+import { MatchList } from "./match-list";
+import { Skeleton } from "@/components/ui/skeleton";
+
+export function MatchesPageContent() {
+  const [filtersOpen, setFiltersOpen] = useState(false);
+  const searchParams = useSearchParams();
+
+  const hasActiveFilters =
+    searchParams.has("teamId") ||
+    searchParams.has("matchDay") ||
+    searchParams.has("countryId");
+
+  return (
+    <div className="flex max-h-[calc(100dvh-8rem)] flex-col gap-6">
+      <div className="shrink-0 space-y-1">
+        <div className="flex items-center justify-between">
+          <h1 className="text-3xl font-bold tracking-tight">Matches</h1>
+          <button
+            type="button"
+            onClick={() => setFiltersOpen(!filtersOpen)}
+            className="relative text-muted-foreground transition-colors hover:text-foreground sm:hidden"
+          >
+            <SlidersHorizontal className="size-5" />
+            {hasActiveFilters ? (
+              <span className="absolute -right-1 -top-1 size-2.5 rounded-full bg-primary" />
+            ) : null}
+          </button>
+        </div>
+        <p className="text-base text-muted-foreground">
+          Browse all 144 matches with filters, sorting and pagination.
+        </p>
+      </div>
+      <MatchFilters mobileOpen={filtersOpen} />
+      <MatchList />
+    </div>
+  );
+}

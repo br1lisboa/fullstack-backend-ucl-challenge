@@ -19,7 +19,7 @@ export default function HomePage() {
 
       <DrawStats />
 
-      <div className="flex flex-col gap-3 sm:flex-row">
+      <div className="flex flex-col gap-3 sm:flex-row md:hidden">
         <Button variant="outline" render={<Link href="/matches" />}>
           View Matches
           <ArrowRight className="ml-2 size-4" />

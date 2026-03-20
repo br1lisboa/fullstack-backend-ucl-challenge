@@ -14,7 +14,7 @@ export function MatchList() {
   const qp = useQueryParams("/matches");
 
   return (
-    <div className="space-y-4">
+    <div className="flex min-h-0 flex-1 flex-col gap-4">
       <DataTable<Match>
         data={data?.matches}
         loading={isLoading}

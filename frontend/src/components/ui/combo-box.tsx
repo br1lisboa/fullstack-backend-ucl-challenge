@@ -1,8 +1,8 @@
 "use client";
 
 import * as React from "react";
-import { X } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Chip, ChipGroup } from "./chip";
 
 export interface ComboBoxOption {
   value: string;
@@ -65,25 +65,6 @@ export function ComboBox({
 
   return (
     <div ref={containerRef} className={cn("relative", className)}>
-      {selectedOptions.length > 0 ? (
-        <div className="mb-1 flex flex-wrap gap-1">
-          {selectedOptions.map((opt) => (
-            <span
-              key={opt.value}
-              className="inline-flex items-center gap-0.5 rounded-md bg-accent px-1.5 py-0.5 text-xs text-accent-foreground"
-            >
-              {opt.label}
-              <button
-                type="button"
-                onClick={() => handleRemove(opt.value)}
-                className="ml-0.5 rounded-sm hover:bg-foreground/10"
-              >
-                <X className="size-3" />
-              </button>
-            </span>
-          ))}
-        </div>
-      ) : null}
       <input
         type="text"
         value={searchTerm}
@@ -108,6 +89,15 @@ export function ComboBox({
             </button>
           ))}
         </div>
+      ) : null}
+      {selectedOptions.length > 0 ? (
+        <ChipGroup className="mt-1.5">
+          {selectedOptions.map((opt) => (
+            <Chip key={opt.value} onRemove={() => handleRemove(opt.value)}>
+              {opt.label}
+            </Chip>
+          ))}
+        </ChipGroup>
       ) : null}
     </div>
   );

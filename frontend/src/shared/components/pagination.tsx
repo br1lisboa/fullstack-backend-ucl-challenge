@@ -19,7 +19,7 @@ export function Pagination({
 }: PaginationProps) {
   return (
     <div
-      className="flex items-center justify-between"
+      className="flex flex-col items-center gap-3 sm:flex-row sm:justify-between transition-opacity"
       style={{ opacity: isPending ? 0.7 : 1 }}
     >
       <p className="text-sm text-muted-foreground">

@@ -13,8 +13,9 @@ import { Button } from "@/components/ui/button";
 import { ComboBox } from "@/components/ui/combo-box";
 import { useTeams } from "@/features/teams/hooks";
 import { useCountries } from "@/features/countries/hooks";
+import { cn } from "@/lib/utils";
 
-export function MatchFilters() {
+function FilterControls({ isPending }: { isPending: boolean }) {
   const qp = useQueryParams("/matches");
   const { data: teams } = useTeams();
   const { data: countries } = useCountries();
@@ -25,7 +26,7 @@ export function MatchFilters() {
         value: String(t.id),
         label: t.name,
       })),
-    [teams]
+    [teams],
   );
 
   const countryOptions = useMemo(
@@ -34,7 +35,7 @@ export function MatchFilters() {
         value: String(c.id),
         label: c.name,
       })),
-    [countries]
+    [countries],
   );
 
   const selectedTeamIds = qp.getAll("teamId");
@@ -45,94 +46,106 @@ export function MatchFilters() {
     "matchDay",
     "matchDayFrom",
     "matchDayTo",
-    "countryId"
+    "countryId",
   );
 
   return (
     <div
-      className={`flex flex-wrap items-end gap-3${qp.isPending ? " opacity-70" : ""}`}
+      className={`flex flex-col items-stretch gap-3 sm:flex-row sm:flex-wrap sm:items-center${isPending ? " opacity-70" : ""}`}
     >
-      <div className="space-y-1">
-        <label className="text-xs text-muted-foreground">Teams</label>
-        <ComboBox
-          options={teamOptions}
-          selected={selectedTeamIds}
-          onChange={(vals) => qp.setMultiple("teamId", vals)}
-          placeholder="Search teams..."
-          className="w-52"
-        />
-      </div>
+      <ComboBox
+        options={teamOptions}
+        selected={selectedTeamIds}
+        onChange={(vals) => qp.setMultiple("teamId", vals)}
+        placeholder="Filter by team..."
+        className="w-full sm:w-52"
+      />
 
-      <div className="space-y-1">
-        <label className="text-xs text-muted-foreground">Match Day</label>
-        <Select
-          value={qp.get("matchDay") || "all"}
-          onValueChange={(v) => qp.set("matchDay", v)}
-        >
-          <SelectTrigger className="w-28">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All</SelectItem>
-            {Array.from({ length: 8 }, (_, i) => (
-              <SelectItem key={i + 1} value={String(i + 1)}>
-                Day {i + 1}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
+      <Select
+        value={qp.get("matchDay") || "all"}
+        onValueChange={(v) => qp.set("matchDay", v)}
+      >
+        <SelectTrigger className="w-full sm:w-32">
+          <SelectValue placeholder="Match day" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="all">All days</SelectItem>
+          {Array.from({ length: 8 }, (_, i) => (
+            <SelectItem key={i + 1} value={String(i + 1)}>
+              Day {i + 1}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
 
-      <div className="space-y-1">
-        <label className="text-xs text-muted-foreground">Countries</label>
-        <ComboBox
-          options={countryOptions}
-          selected={selectedCountryIds}
-          onChange={(vals) => qp.setMultiple("countryId", vals)}
-          placeholder="Search countries..."
-          className="w-52"
-        />
-      </div>
+      <ComboBox
+        options={countryOptions}
+        selected={selectedCountryIds}
+        onChange={(vals) => qp.setMultiple("countryId", vals)}
+        placeholder="Filter by country..."
+        className="w-full sm:w-52"
+      />
 
-      <div className="space-y-1">
-        <label className="text-xs text-muted-foreground">Sort By</label>
-        <Select
-          value={qp.get("sortBy") || "matchDay"}
-          onValueChange={(v) => qp.set("sortBy", v)}
-        >
-          <SelectTrigger className="w-32">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="matchDay">Match Day</SelectItem>
-            <SelectItem value="homeTeam">Home Team</SelectItem>
-            <SelectItem value="awayTeam">Away Team</SelectItem>
-            <SelectItem value="id">ID</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
+      <Select
+        value={qp.get("sortBy") || "matchDay"}
+        onValueChange={(v) => qp.set("sortBy", v)}
+      >
+        <SelectTrigger className="w-full sm:w-36">
+          <SelectValue placeholder="Sort by" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="matchDay">Sort: Match Day</SelectItem>
+          <SelectItem value="homeTeam">Sort: Home Team</SelectItem>
+          <SelectItem value="awayTeam">Sort: Away Team</SelectItem>
+          <SelectItem value="id">Sort: ID</SelectItem>
+        </SelectContent>
+      </Select>
 
-      <div className="space-y-1">
-        <label className="text-xs text-muted-foreground">Order</label>
-        <Select
-          value={qp.get("sortOrder") || "asc"}
-          onValueChange={(v) => qp.set("sortOrder", v)}
-        >
-          <SelectTrigger className="w-24">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="asc">Asc</SelectItem>
-            <SelectItem value="desc">Desc</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
+      <Select
+        value={qp.get("sortOrder") || "asc"}
+        onValueChange={(v) => qp.set("sortOrder", v)}
+      >
+        <SelectTrigger className="w-full sm:w-24">
+          <SelectValue placeholder="Order" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="asc">Asc</SelectItem>
+          <SelectItem value="desc">Desc</SelectItem>
+        </SelectContent>
+      </Select>
 
       {hasFilters ? (
         <Button variant="ghost" size="sm" onClick={qp.clear}>
           Clear filters
         </Button>
       ) : null}
+    </div>
+  );
+}
+
+export function MatchFilters({ mobileOpen = false }: { mobileOpen?: boolean }) {
+  const qp = useQueryParams("/matches");
+
+  return (
+    <div className="shrink-0">
+      {/* Desktop: always visible */}
+      <div className="hidden sm:block">
+        <FilterControls isPending={qp.isPending} />
+      </div>
+
+      {/* Mobile: collapsible controlled by parent */}
+      <div
+        className={cn(
+          "grid overflow-hidden transition-[grid-template-rows] duration-200 ease-out sm:hidden",
+          mobileOpen ? "grid-rows-[1fr]" : "grid-rows-[0fr]",
+        )}
+      >
+        <div className="min-h-0">
+          <div className="pb-1">
+            <FilterControls isPending={qp.isPending} />
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

@@ -1,5 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import { cn } from "@/lib/utils";
 
 interface StatItemProps {
   title: string;
@@ -21,6 +22,12 @@ function StatItem({ title, value }: StatItemProps) {
   );
 }
 
+const GRID_COLS: Record<number, string> = {
+  2: "lg:grid-cols-2",
+  3: "lg:grid-cols-3",
+  4: "lg:grid-cols-4",
+};
+
 interface StatCardsRootProps {
   loading?: boolean;
   children: React.ReactNode;
@@ -28,7 +35,7 @@ interface StatCardsRootProps {
 }
 
 function StatCardsRoot({ loading, children, columns = 4 }: StatCardsRootProps) {
-  const gridClass = `grid gap-4 sm:grid-cols-2 lg:grid-cols-${columns}`;
+  const gridClass = cn("grid gap-4 sm:grid-cols-2", GRID_COLS[columns]);
 
   if (loading) {
     const count = Array.isArray(children) ? children.filter(Boolean).length : 1;
