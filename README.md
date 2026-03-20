@@ -1,6 +1,8 @@
 # Champions League Draw API
 
-API REST para el sorteo de la Champions League en formato Swiss Round: 36 equipos, 8 jornadas, 144 partidos.
+Aplicación fullstack para el sorteo de la fase de liga de la Champions League en su
+nuevo formato: 36 equipos, 8 jornadas, 144 partidos. Backend con Node.js/Express y
+frontend con Next.js/React.
 
 **Autor:** Bruno Lisboa
 
@@ -27,32 +29,32 @@ npm run test:load    # Autocannon load tests (8 scenarios)
 
 ## API Endpoints
 
-| Method | Path | Descripcion |
-|--------|------|-------------|
-| GET | `/health` | Health check del servicio |
-| POST | `/draw` | Ejecutar el sorteo (201 / 409 si ya existe) |
-| GET | `/draw` | Obtener el sorteo actual (200 / 404) |
-| DELETE | `/draw` | Eliminar el sorteo (200 / 404) |
-| GET | `/draw/statistics` | Estadisticas del sorteo |
-| GET | `/matches` | Listar partidos con filtros y paginacion |
-| GET | `/matches/:id` | Detalle de un partido |
-| GET | `/teams` | Listar los 36 equipos |
-| GET | `/teams/:id` | Detalle de equipo con sus partidos |
-| GET | `/api-docs` | Documentacion Swagger/OpenAPI |
+| Method | Path               | Descripcion                                 |
+| ------ | ------------------ | ------------------------------------------- |
+| GET    | `/health`          | Health check del servicio                   |
+| POST   | `/draw`            | Ejecutar el sorteo (201 / 409 si ya existe) |
+| GET    | `/draw`            | Obtener el sorteo actual (200 / 404)        |
+| DELETE | `/draw`            | Eliminar el sorteo (200 / 404)              |
+| GET    | `/draw/statistics` | Estadisticas del sorteo                     |
+| GET    | `/matches`         | Listar partidos con filtros y paginacion    |
+| GET    | `/matches/:id`     | Detalle de un partido                       |
+| GET    | `/teams`           | Listar los 36 equipos                       |
+| GET    | `/teams/:id`       | Detalle de equipo con sus partidos          |
+| GET    | `/api-docs`        | Documentacion Swagger/OpenAPI               |
 
 ### Query params de GET /matches
 
-| Param | Tipo | Descripcion |
-|-------|------|-------------|
-| `teamId` | int | Filtrar por equipo (home o away) |
-| `matchDay` | int (1-8) | Filtrar por jornada exacta |
-| `matchDayFrom` | int (1-8) | Filtrar desde jornada (rango) |
-| `matchDayTo` | int (1-8) | Filtrar hasta jornada (rango) |
-| `countryId` | int | Filtrar por pais (equipos home o away) |
-| `sortBy` | string | Ordenar por: `matchDay`, `homeTeam`, `awayTeam`, `id` (default: `matchDay`) |
-| `sortOrder` | string | `asc` o `desc` (default: `asc`) |
-| `page` | int (>0) | Pagina (default: 1) |
-| `limit` | int (1-100) | Resultados por pagina (default: 10) |
+| Param          | Tipo        | Descripcion                                                                 |
+| -------------- | ----------- | --------------------------------------------------------------------------- |
+| `teamId`       | int         | Filtrar por equipo (home o away)                                            |
+| `matchDay`     | int (1-8)   | Filtrar por jornada exacta                                                  |
+| `matchDayFrom` | int (1-8)   | Filtrar desde jornada (rango)                                               |
+| `matchDayTo`   | int (1-8)   | Filtrar hasta jornada (rango)                                               |
+| `countryId`    | int         | Filtrar por pais (equipos home o away)                                      |
+| `sortBy`       | string      | Ordenar por: `matchDay`, `homeTeam`, `awayTeam`, `id` (default: `matchDay`) |
+| `sortOrder`    | string      | `asc` o `desc` (default: `asc`)                                             |
+| `page`         | int (>0)    | Pagina (default: 1)                                                         |
+| `limit`        | int (1-100) | Resultados por pagina (default: 10)                                         |
 
 ---
 
@@ -97,6 +99,7 @@ npm run test:load    # Autocannon load tests (8 scenarios)
 **Problema:** El service aceptaba cualquier valor de `page` y `limit` sin validar. Los unit tests esperaban que `page: 0` lance error y que `limit: 150` caiga al default.
 
 **Solucion:** Dos comportamientos distintos segun lo que dictan los tests:
+
 - `page < 1` → throw Error (el test espera un rechazo explicito)
 - `limit` fuera de rango (< 1 o > 100) → reset a `undefined` para que tome el default de 10 (el test espera que el repository reciba `limit: 10`, no un error)
 
@@ -173,6 +176,7 @@ Documentado en `api-docs/ARCHITECTURE.md` con diagramas ASCII: overview del sist
 ### Validacion en dos capas
 
 La validacion de query params ocurre en dos lugares:
+
 1. **Router** (Zod): transforma strings a numeros y valida rangos (matchDay 1-8, teamId > 0)
 2. **Service**: valida reglas de paginacion (page >= 1, limit en rango)
 

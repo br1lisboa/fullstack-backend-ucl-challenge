@@ -92,5 +92,16 @@
   },
   "common": {
     "noData": "Nenhum dado encontrado."
+  },
+  "error": {
+    "title": "Algo deu errado",
+    "description": "Ocorreu um erro inesperado. Por favor tente novamente.",
+    "tryAgain": "Tentar novamente",
+    "goHome": "Ir ao início"
+  },
+  "notFound": {
+    "title": "Página não encontrada",
+    "description": "A página que você procura não existe ou foi movida.",
+    "goHome": "Ir ao início"
   }
 }
