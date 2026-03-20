@@ -15,8 +15,9 @@ import { useTeams } from "@/features/teams/hooks";
 import { useCountries } from "@/features/countries/hooks";
 import { cn } from "@/lib/utils";
 
-function FilterControls({ isPending }: { isPending: boolean }) {
+function FilterControls() {
   const qp = useQueryParams("/matches");
+  const isPending = qp.isPending;
   const { data: teams } = useTeams();
   const { data: countries } = useCountries();
 
@@ -124,13 +125,11 @@ function FilterControls({ isPending }: { isPending: boolean }) {
 }
 
 export function MatchFilters({ mobileOpen = false }: { mobileOpen?: boolean }) {
-  const qp = useQueryParams("/matches");
-
   return (
     <div className="shrink-0">
       {/* Desktop: always visible */}
       <div className="hidden sm:block">
-        <FilterControls isPending={qp.isPending} />
+        <FilterControls />
       </div>
 
       {/* Mobile: collapsible controlled by parent */}
@@ -142,7 +141,7 @@ export function MatchFilters({ mobileOpen = false }: { mobileOpen?: boolean }) {
       >
         <div className="min-h-0">
           <div className="pb-1">
-            <FilterControls isPending={qp.isPending} />
+            <FilterControls />
           </div>
         </div>
       </div>

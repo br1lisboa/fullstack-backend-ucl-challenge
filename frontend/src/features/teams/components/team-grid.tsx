@@ -18,7 +18,9 @@ export function TeamGrid({ teams }: TeamGridProps) {
     <div className="space-y-8">
       {Array.from(teamsByPot.entries()).map(([pot, potTeams]) => (
         <div key={pot}>
-          <h2 className="mb-3 text-lg font-semibold">Pot {pot}</h2>
+          <h2 className="mb-3 text-sm font-medium tracking-wide text-muted-foreground uppercase">
+            Pot {pot}
+          </h2>
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {potTeams.map((team) => (
               <TeamCard key={team.id} team={team} />

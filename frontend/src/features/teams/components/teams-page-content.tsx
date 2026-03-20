@@ -28,13 +28,13 @@ export function TeamsPageContent() {
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       <Input
         type="text"
         placeholder="Search teams by name..."
         value={search}
         onChange={(e) => setSearch(e.target.value)}
-        className="max-w-sm"
+        className="w-full sm:max-w-sm"
       />
       <TeamGrid teams={filteredTeams} />
     </div>

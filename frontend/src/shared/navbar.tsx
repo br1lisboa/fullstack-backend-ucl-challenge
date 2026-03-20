@@ -60,7 +60,7 @@ export function Navbar() {
             variant="ghost"
             size="icon"
             className="size-8 md:hidden"
-            onClick={() => setOpen(!open)}
+            onClick={() => setOpen((prev) => !prev)}
           >
             {open ? <X className="size-4" /> : <Menu className="size-4" />}
             <span className="sr-only">Menu</span>

@@ -23,7 +23,7 @@ export function MatchesPageContent() {
           <h1 className="text-3xl font-bold tracking-tight">Matches</h1>
           <button
             type="button"
-            onClick={() => setFiltersOpen(!filtersOpen)}
+            onClick={() => setFiltersOpen((prev) => !prev)}
             className="relative text-muted-foreground transition-colors hover:text-foreground sm:hidden"
           >
             <SlidersHorizontal className="size-5" />
