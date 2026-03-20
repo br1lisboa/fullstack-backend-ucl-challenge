@@ -1,4 +1,5 @@
-const BASE_URL = "/api";
+const isServer = typeof window === "undefined";
+const BASE_URL = isServer ? "http://localhost:8000" : "/api";
 
 export class ApiError extends Error {
   constructor(
