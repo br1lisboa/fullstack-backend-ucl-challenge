@@ -10,6 +10,7 @@ import { initializeDatabase } from "./src/shared/infrastructure/database.js";
 import { registerRoutes } from "./src/shared/infrastructure/routes.js";
 import { registerSwagger } from "./src/shared/infrastructure/swagger.js";
 import { logger } from "./src/shared/infrastructure/logger.js";
+import { errorHandler } from "./src/shared/infrastructure/error-handler.middleware.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -40,5 +41,8 @@ registerRoutes(app);
 
 // Register Swagger documentation
 registerSwagger(app);
+
+// Centralized error handler (must be registered after routes)
+app.use(errorHandler);
 
 export default app;

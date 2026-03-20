@@ -13,9 +13,6 @@ countriesRouter.get(
       const countries = await service.run();
       return res.status(200).json(countries);
     } catch (error) {
-      if (error instanceof Error) {
-        return res.status(400).json({ message: error.message });
-      }
       next(error);
     }
   }

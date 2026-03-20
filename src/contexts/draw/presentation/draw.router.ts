@@ -26,10 +26,6 @@ drawRouter.post(
         logger.warn("Attempted to create draw when one already exists");
         return res.status(409).send("Draw already exists");
       }
-      if (error instanceof Error) {
-        logger.error({ err: error }, "Failed to create draw");
-        return res.status(400).json({ message: error.message });
-      }
       next(error);
     }
   }
@@ -48,13 +44,8 @@ drawRouter.get(
         return res.status(404).json({ message: "No draw found" });
       }
 
-      const drawPrimitives = draw.toPrimitives();
-
-      return res.status(200).json(drawPrimitives);
+      return res.status(200).json(draw.toPrimitives());
     } catch (error) {
-      if (error instanceof Error) {
-        return res.status(400).json({ message: error.message });
-      }
       next(error);
     }
   }
@@ -75,9 +66,6 @@ drawRouter.get(
 
       return res.status(200).json(stats);
     } catch (error) {
-      if (error instanceof Error) {
-        return res.status(400).json({ message: error.message });
-      }
       next(error);
     }
   }
@@ -104,9 +92,6 @@ drawRouter.delete(
       logger.info("Draw deleted successfully");
       return res.status(200).json({ message: "Draw deleted successfully" });
     } catch (error) {
-      if (error instanceof Error) {
-        return res.status(400).json({ message: error.message });
-      }
       next(error);
     }
   }

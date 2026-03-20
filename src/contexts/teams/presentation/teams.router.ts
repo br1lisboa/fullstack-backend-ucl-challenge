@@ -24,9 +24,6 @@ teamsRouter.get(
       const teams = await service.run(query);
       return res.status(200).json(teams);
     } catch (error) {
-      if (error instanceof Error) {
-        return res.status(400).json({ message: error.message });
-      }
       next(error);
     }
   }
@@ -50,9 +47,6 @@ teamsRouter.get(
 
       return res.status(200).json(result);
     } catch (error) {
-      if (error instanceof Error) {
-        return res.status(400).json({ message: error.message });
-      }
       next(error);
     }
   }

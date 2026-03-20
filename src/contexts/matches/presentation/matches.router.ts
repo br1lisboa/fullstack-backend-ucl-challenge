@@ -1,12 +1,11 @@
 import { Router, Request, Response, NextFunction } from "express";
-import { z, ZodError } from "zod";
+import { z } from "zod";
 import { container } from "../../../shared/container/container.js";
 import { TYPES } from "../../../shared/container/types.js";
 import { SearchMatchesService } from "../application/search-matches.service.js";
 import { SearchMatchesResponse } from "./dtos/match-response.dto.js";
 import { SearchMatchesQuerySchema } from "./dtos/search-matches.dto.js";
 import { MatchRepository } from "../domain/match.repository.js";
-import { logger } from "../../../shared/infrastructure/logger.js";
 
 const MatchIdSchema = z.object({
   id: z.string().transform((val) => parseInt(val, 10)).pipe(z.number().int().positive()),
@@ -39,14 +38,6 @@ matchesRouter.get(
 
       return res.status(200).json(result);
     } catch (error) {
-      if (error instanceof ZodError) {
-        logger.warn({ query: req.query, issue: error.issues[0].message }, "Invalid match query params");
-        return res.status(400).json({ message: error.issues[0].message });
-      }
-      if (error instanceof Error) {
-        logger.error({ err: error }, "Failed to search matches");
-        return res.status(400).json({ message: error.message });
-      }
       next(error);
     }
   }
@@ -70,9 +61,6 @@ matchesRouter.get(
 
       return res.status(200).json(match.toPrimitives());
     } catch (error) {
-      if (error instanceof Error) {
-        return res.status(400).json({ message: error.message });
-      }
       next(error);
     }
   }
