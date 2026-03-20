@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import { ComboBox } from "@/components/ui/combo-box";
 import { useTeams } from "@/features/teams/hooks";
 import { useCountries } from "@/features/countries/hooks";
+import { useDictionary } from "@/i18n/context";
 import { cn } from "@/lib/utils";
 
 function FilterControls() {
@@ -20,6 +21,7 @@ function FilterControls() {
   const isPending = qp.isPending;
   const { data: teams } = useTeams();
   const { data: countries } = useCountries();
+  const t = useDictionary();
 
   const teamOptions = useMemo(
     () =>
@@ -50,6 +52,27 @@ function FilterControls() {
     "countryId",
   );
 
+  const matchDay = qp.get("matchDay") || "all";
+  const sortBy = qp.get("sortBy") || "matchDay";
+  const sortOrder = qp.get("sortOrder") || "asc";
+
+  const matchDayLabel =
+    matchDay === "all"
+      ? t.matches.allDays
+      : t.matches.day.replace("{n}", matchDay);
+
+  const sortByLabels: Record<string, string> = {
+    matchDay: t.matches.sortMatchDay,
+    homeTeam: t.matches.sortHomeTeam,
+    awayTeam: t.matches.sortAwayTeam,
+    id: t.matches.sortId,
+  };
+
+  const sortOrderLabels: Record<string, string> = {
+    asc: t.matches.asc,
+    desc: t.matches.desc,
+  };
+
   return (
     <div
       className={`flex flex-col items-stretch gap-3 sm:flex-row sm:flex-wrap sm:items-center${isPending ? " opacity-70" : ""}`}
@@ -58,22 +81,21 @@ function FilterControls() {
         options={teamOptions}
         selected={selectedTeamIds}
         onChange={(vals) => qp.setMultiple("teamId", vals)}
-        placeholder="Filter by team..."
-        className="w-full sm:w-52"
+        placeholder={t.matches.filterByTeam}
+        className="w-full sm:w-50"
       />
 
-      <Select
-        value={qp.get("matchDay") || "all"}
-        onValueChange={(v) => qp.set("matchDay", v)}
-      >
+      <Select value={matchDay} onValueChange={(v) => qp.set("matchDay", v)}>
         <SelectTrigger className="w-full sm:w-32">
-          <SelectValue placeholder="Match day" />
+          <SelectValue placeholder={t.matches.allDays}>
+            {matchDayLabel}
+          </SelectValue>
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="all">All days</SelectItem>
+          <SelectItem value="all">{t.matches.allDays}</SelectItem>
           {Array.from({ length: 8 }, (_, i) => (
             <SelectItem key={i + 1} value={String(i + 1)}>
-              Day {i + 1}
+              {t.matches.day.replace("{n}", String(i + 1))}
             </SelectItem>
           ))}
         </SelectContent>
@@ -83,41 +105,39 @@ function FilterControls() {
         options={countryOptions}
         selected={selectedCountryIds}
         onChange={(vals) => qp.setMultiple("countryId", vals)}
-        placeholder="Filter by country..."
+        placeholder={t.matches.filterByCountry}
         className="w-full sm:w-52"
       />
 
-      <Select
-        value={qp.get("sortBy") || "matchDay"}
-        onValueChange={(v) => qp.set("sortBy", v)}
-      >
-        <SelectTrigger className="w-full sm:w-36">
-          <SelectValue placeholder="Sort by" />
+      <Select value={sortBy} onValueChange={(v) => qp.set("sortBy", v)}>
+        <SelectTrigger className="w-full sm:w-44">
+          <SelectValue placeholder={t.matches.sortMatchDay}>
+            {sortByLabels[sortBy] ?? sortBy}
+          </SelectValue>
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="matchDay">Sort: Match Day</SelectItem>
-          <SelectItem value="homeTeam">Sort: Home Team</SelectItem>
-          <SelectItem value="awayTeam">Sort: Away Team</SelectItem>
-          <SelectItem value="id">Sort: ID</SelectItem>
+          <SelectItem value="matchDay">{t.matches.sortMatchDay}</SelectItem>
+          <SelectItem value="homeTeam">{t.matches.sortHomeTeam}</SelectItem>
+          <SelectItem value="awayTeam">{t.matches.sortAwayTeam}</SelectItem>
+          <SelectItem value="id">{t.matches.sortId}</SelectItem>
         </SelectContent>
       </Select>
 
-      <Select
-        value={qp.get("sortOrder") || "asc"}
-        onValueChange={(v) => qp.set("sortOrder", v)}
-      >
+      <Select value={sortOrder} onValueChange={(v) => qp.set("sortOrder", v)}>
         <SelectTrigger className="w-full sm:w-24">
-          <SelectValue placeholder="Order" />
+          <SelectValue placeholder={t.matches.asc}>
+            {sortOrderLabels[sortOrder] ?? sortOrder}
+          </SelectValue>
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="asc">Asc</SelectItem>
-          <SelectItem value="desc">Desc</SelectItem>
+          <SelectItem value="asc">{t.matches.asc}</SelectItem>
+          <SelectItem value="desc">{t.matches.desc}</SelectItem>
         </SelectContent>
       </Select>
 
       {hasFilters ? (
         <Button variant="ghost" size="sm" onClick={qp.clear}>
-          Clear filters
+          {t.matches.clearFilters}
         </Button>
       ) : null}
     </div>

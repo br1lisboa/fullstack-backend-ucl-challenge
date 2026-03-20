@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useDraw } from "@/features/draw/hooks";
+import { useDictionary, useLocale } from "@/i18n/context";
 import {
   Trophy,
   CalendarDays,
@@ -12,36 +13,38 @@ import {
   ArrowRight,
 } from "lucide-react";
 
-const features = [
-  {
-    icon: Trophy,
-    value: "36",
-    title: "Teams",
-    description: "Divided into 4 pots based on UEFA ranking",
-  },
-  {
-    icon: CalendarDays,
-    value: "8",
-    title: "Match Days",
-    description: "Each team plays 8 matches — 4 home, 4 away",
-  },
-  {
-    icon: Swords,
-    value: "144",
-    title: "Matches",
-    description: "Generated respecting Swiss Round constraints",
-  },
-  {
-    icon: Sparkles,
-    value: "1",
-    title: "Draw",
-    description: "One click to simulate the complete draw",
-  },
-];
-
 export default function HomePage() {
   const { data: draw, isLoading, isError } = useDraw();
   const hasActiveDraw = !!draw && !isLoading && !isError;
+  const t = useDictionary();
+  const locale = useLocale();
+
+  const features = [
+    {
+      icon: Trophy,
+      value: "36",
+      title: t.home.teamsTitle,
+      description: t.home.teamsDesc,
+    },
+    {
+      icon: CalendarDays,
+      value: "8",
+      title: t.home.matchDaysTitle,
+      description: t.home.matchDaysDesc,
+    },
+    {
+      icon: Swords,
+      value: "144",
+      title: t.home.matchesTitle,
+      description: t.home.matchesDesc,
+    },
+    {
+      icon: Sparkles,
+      value: "1",
+      title: t.home.drawTitle,
+      description: t.home.drawDesc,
+    },
+  ];
 
   return (
     <div className="-mx-4 -mt-8">
@@ -52,26 +55,24 @@ export default function HomePage() {
 
         <div className="relative mx-auto max-w-3xl text-center">
           <p className="mb-3 text-sm font-medium tracking-widest text-blue-300 uppercase">
-            Swiss Round Format
+            {t.home.badge}
           </p>
           <h1 className="text-4xl font-extrabold tracking-tight sm:text-5xl lg:text-6xl">
-            UEFA Champions League
+            {t.home.title}
           </h1>
           <p className="mt-2 text-xl font-light text-blue-200 sm:text-2xl">
-            Draw Simulator
+            {t.home.subtitle}
           </p>
           <p className="mx-auto mt-6 max-w-xl text-base leading-relaxed text-slate-300">
-            Simulate the official draw for the new Champions League format with
-            36 teams, 8 match days, and 144 matches — all generated respecting
-            the tournament constraints.
+            {t.home.description}
           </p>
           <div className="mt-8">
             <Button
               size="lg"
-              render={<Link href="/draw" />}
+              render={<Link href={`/${locale}/draw`} />}
               className="bg-blue-600 px-8 text-base font-semibold text-white hover:bg-blue-500"
             >
-              Go to Draw
+              {t.home.goToDraw}
               <ArrowRight className="ml-2 size-4" />
             </Button>
           </div>
@@ -81,7 +82,7 @@ export default function HomePage() {
       {/* How It Works */}
       <section className="mx-auto max-w-5xl px-4 py-16">
         <h2 className="mb-8 text-center text-2xl font-bold tracking-tight">
-          How It Works
+          {t.home.howItWorks}
         </h2>
         <div className="grid gap-4 sm:grid-cols-2">
           {features.map((feature) => (
@@ -109,17 +110,17 @@ export default function HomePage() {
           <Card className="border-primary/20 bg-primary/5">
             <CardContent className="flex flex-col items-center gap-4 p-6 text-center sm:flex-row sm:text-left">
               <div className="flex-1">
-                <p className="text-lg font-semibold">Draw Completed</p>
+                <p className="text-lg font-semibold">{t.home.drawCompleted}</p>
                 <p className="text-sm text-muted-foreground">
-                  144 matches have been generated. Explore the results.
+                  {t.home.drawCompletedDesc}
                 </p>
               </div>
               <div className="flex gap-3">
-                <Button variant="outline" render={<Link href="/matches" />}>
-                  View Matches
+                <Button variant="outline" render={<Link href={`/${locale}/matches`} />}>
+                  {t.home.viewMatches}
                 </Button>
-                <Button variant="outline" render={<Link href="/teams" />}>
-                  View Teams
+                <Button variant="outline" render={<Link href={`/${locale}/teams`} />}>
+                  {t.home.viewTeams}
                 </Button>
               </div>
             </CardContent>

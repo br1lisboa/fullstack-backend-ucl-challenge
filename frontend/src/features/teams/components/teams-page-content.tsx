@@ -5,10 +5,12 @@ import { Input } from "@/components/ui/input";
 import { TeamGrid } from "./team-grid";
 import { useTeams } from "../hooks";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useDictionary } from "@/i18n/context";
 
 export function TeamsPageContent() {
   const { data: teams, isLoading } = useTeams();
   const [search, setSearch] = useState("");
+  const t = useDictionary();
 
   const filteredTeams = useMemo(() => {
     if (!teams) return [];
@@ -31,7 +33,7 @@ export function TeamsPageContent() {
     <div className="space-y-6">
       <Input
         type="text"
-        placeholder="Search teams by name..."
+        placeholder={t.teams.searchPlaceholder}
         value={search}
         onChange={(e) => setSearch(e.target.value)}
         className="w-full sm:max-w-sm"

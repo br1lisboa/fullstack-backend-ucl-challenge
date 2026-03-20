@@ -4,6 +4,7 @@ import type { Match } from "@/shared/types";
 import { DataTable } from "@/shared/components/data-table";
 import { TeamLabel } from "@/shared/components/team-label";
 import { Badge } from "@/components/ui/badge";
+import { useDictionary } from "@/i18n/context";
 
 interface TeamMatchesTableProps {
   matches: Match[];
@@ -16,6 +17,8 @@ interface MatchWithVenue extends Match {
 }
 
 export function TeamMatchesTable({ matches, teamId }: TeamMatchesTableProps) {
+  const t = useDictionary();
+
   const rows: MatchWithVenue[] = matches
     .toSorted((a, b) => a.matchDay - b.matchDay)
     .map((m) => {
@@ -30,24 +33,24 @@ export function TeamMatchesTable({ matches, teamId }: TeamMatchesTableProps) {
   return (
     <DataTable<MatchWithVenue>
       data={rows}
-      empty="No matches yet. Execute a draw first."
+      empty={t.teams.noMatches}
       keyExtractor={(m) => m.id}
     >
       <DataTable.Column<MatchWithVenue>
-        header="Day"
+        header={t.teams.headerDay}
         className="w-16"
         render={(m) => <Badge variant="outline">{m.matchDay}</Badge>}
       />
       <DataTable.Column<MatchWithVenue>
-        header="Opponent"
+        header={t.teams.headerOpponent}
         render={(m) => <TeamLabel team={m.opponent} />}
       />
       <DataTable.Column<MatchWithVenue>
-        header="Venue"
+        header={t.teams.headerVenue}
         className="w-20"
         render={(m) => (
           <Badge variant={m.isHome ? "default" : "secondary"}>
-            {m.isHome ? "Home" : "Away"}
+            {m.isHome ? t.teams.home : t.teams.away}
           </Badge>
         )}
       />

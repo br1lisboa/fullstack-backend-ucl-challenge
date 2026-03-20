@@ -1,14 +1,24 @@
 "use client";
 
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { useTransition, useCallback, useMemo } from "react";
 
 const EMPTY_ARRAY: string[] = [];
+const LOCALE_PREFIX_RE = /^\/([a-z]{2})(\/|$)/;
 
 export function useQueryParams(basePath: string) {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const pathname = usePathname();
   const [isPending, startTransition] = useTransition();
+
+  // Extract locale prefix from current pathname (e.g., "/en" from "/en/matches")
+  const localePrefix = useMemo(() => {
+    const match = pathname.match(LOCALE_PREFIX_RE);
+    return match ? `/${match[1]}` : "";
+  }, [pathname]);
+
+  const fullBasePath = `${localePrefix}${basePath}`;
 
   const get = useCallback(
     (key: string) => searchParams.get(key),
@@ -33,10 +43,10 @@ export function useQueryParams(basePath: string) {
       }
       if (resetPage) params.delete("page");
       startTransition(() => {
-        router.push(`${basePath}?${params.toString()}`);
+        router.push(`${fullBasePath}?${params.toString()}`);
       });
     },
-    [searchParams, basePath, router]
+    [searchParams, fullBasePath, router]
   );
 
   const setPage = useCallback(
@@ -44,17 +54,17 @@ export function useQueryParams(basePath: string) {
       const params = new URLSearchParams(searchParams.toString());
       params.set("page", String(page));
       startTransition(() => {
-        router.push(`${basePath}?${params.toString()}`);
+        router.push(`${fullBasePath}?${params.toString()}`);
       });
     },
-    [searchParams, basePath, router]
+    [searchParams, fullBasePath, router]
   );
 
   const clear = useCallback(() => {
     startTransition(() => {
-      router.push(basePath);
+      router.push(fullBasePath);
     });
-  }, [basePath, router]);
+  }, [fullBasePath, router]);
 
   const getAll = useCallback(
     (key: string): string[] => {
@@ -75,10 +85,10 @@ export function useQueryParams(basePath: string) {
       }
       params.delete("page");
       startTransition(() => {
-        router.push(`${basePath}?${params.toString()}`);
+        router.push(`${fullBasePath}?${params.toString()}`);
       });
     },
-    [searchParams, basePath, router]
+    [searchParams, fullBasePath, router]
   );
 
   const has = useCallback(

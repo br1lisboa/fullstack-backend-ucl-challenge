@@ -5,11 +5,12 @@ import { useSearchParams } from "next/navigation";
 import { SlidersHorizontal } from "lucide-react";
 import { MatchFilters } from "./match-filters";
 import { MatchList } from "./match-list";
-import { Skeleton } from "@/components/ui/skeleton";
+import { useDictionary } from "@/i18n/context";
 
 export function MatchesPageContent() {
   const [filtersOpen, setFiltersOpen] = useState(false);
   const searchParams = useSearchParams();
+  const t = useDictionary();
 
   const hasActiveFilters =
     searchParams.has("teamId") ||
@@ -20,7 +21,7 @@ export function MatchesPageContent() {
     <div className="flex max-h-[calc(100dvh-8rem)] flex-col gap-6">
       <div className="shrink-0 space-y-1">
         <div className="flex items-center justify-between">
-          <h1 className="text-3xl font-bold tracking-tight">Matches</h1>
+          <h1 className="text-3xl font-bold tracking-tight">{t.matches.title}</h1>
           <button
             type="button"
             onClick={() => setFiltersOpen((prev) => !prev)}
@@ -33,7 +34,7 @@ export function MatchesPageContent() {
           </button>
         </div>
         <p className="text-base text-muted-foreground">
-          Browse all 144 matches with filters, sorting and pagination.
+          {t.matches.description}
         </p>
       </div>
       <MatchFilters mobileOpen={filtersOpen} />

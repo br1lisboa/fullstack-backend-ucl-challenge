@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { useDictionary } from "@/i18n/context";
 
 interface PaginationProps {
   page: number;
@@ -17,14 +18,19 @@ export function Pagination({
   onPageChange,
   isPending,
 }: PaginationProps) {
+  const t = useDictionary();
+
+  const resultsText = t.matches.results
+    .replace("{total}", String(total))
+    .replace("{page}", String(page))
+    .replace("{totalPages}", String(totalPages));
+
   return (
     <div
       className="flex flex-col items-center gap-3 sm:flex-row sm:justify-between transition-opacity"
       style={{ opacity: isPending ? 0.7 : 1 }}
     >
-      <p className="text-sm text-muted-foreground">
-        {total} results — Page {page} of {totalPages}
-      </p>
+      <p className="text-sm text-muted-foreground">{resultsText}</p>
       <div className="flex gap-2">
         <Button
           variant="outline"
@@ -32,7 +38,7 @@ export function Pagination({
           disabled={page <= 1}
           onClick={() => onPageChange(page - 1)}
         >
-          Previous
+          {t.matches.previous}
         </Button>
         <Button
           variant="outline"
@@ -40,7 +46,7 @@ export function Pagination({
           disabled={page >= totalPages}
           onClick={() => onPageChange(page + 1)}
         >
-          Next
+          {t.matches.next}
         </Button>
       </div>
     </div>

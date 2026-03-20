@@ -6,12 +6,14 @@ import { DataTable } from "@/shared/components/data-table";
 import { Pagination } from "@/shared/components/pagination";
 import { TeamLabel } from "@/shared/components/team-label";
 import { Badge } from "@/components/ui/badge";
+import { useDictionary } from "@/i18n/context";
 import type { Match } from "@/shared/types";
 
 export function MatchList() {
   const filters = useMatchFilters();
   const { data, isLoading, error } = useMatches(filters);
   const qp = useQueryParams("/matches");
+  const t = useDictionary();
 
   return (
     <div className="flex min-h-0 flex-1 flex-col gap-4">
@@ -19,26 +21,26 @@ export function MatchList() {
         data={data?.matches}
         loading={isLoading}
         error={error?.message}
-        empty="No matches found. Try adjusting your filters or execute a draw first."
+        empty={t.matches.noMatches}
         keyExtractor={(m) => m.id}
         isPending={qp.isPending}
       >
         <DataTable.Column<Match>
-          header="Day"
+          header={t.matches.headerDay}
           className="w-16"
           render={(m) => <Badge variant="outline">{m.matchDay}</Badge>}
         />
         <DataTable.Column<Match>
-          header="Home"
+          header={t.matches.headerHome}
           render={(m) => <TeamLabel team={m.homeTeam} />}
         />
         <DataTable.Column<Match>
           header=""
           className="w-12 text-center text-xs text-muted-foreground"
-          render={() => "vs"}
+          render={() => t.matches.vs}
         />
         <DataTable.Column<Match>
-          header="Away"
+          header={t.matches.headerAway}
           render={(m) => <TeamLabel team={m.awayTeam} />}
         />
       </DataTable>

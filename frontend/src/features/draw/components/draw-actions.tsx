@@ -14,16 +14,18 @@ import {
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import { ApiError } from "@/shared/api-client";
+import { useDictionary } from "@/i18n/context";
 
 export function DrawActions() {
   const { data: draw, isLoading, error } = useDraw();
   const createMutation = useCreateDraw();
   const deleteMutation = useDeleteDraw();
+  const t = useDictionary();
 
   const deleteAction = useConfirmAction({
     mutation: deleteMutation,
-    successMessage: "Draw deleted successfully",
-    errorMessage: "Failed to delete draw",
+    successMessage: t.draw.drawDeleted,
+    errorMessage: t.draw.failedToDelete,
   });
 
   const drawExists =
@@ -31,10 +33,10 @@ export function DrawActions() {
 
   function handleCreate() {
     createMutation.mutate(undefined, {
-      onSuccess: () => toast.success("Draw created successfully"),
+      onSuccess: () => toast.success(t.draw.drawCreated),
       onError: (err) =>
         toast.error(
-          err instanceof ApiError ? err.message : "Failed to create draw"
+          err instanceof ApiError ? err.message : t.draw.failedToCreate
         ),
     });
   }
@@ -42,7 +44,7 @@ export function DrawActions() {
   if (isLoading) {
     return (
       <div className="flex gap-3">
-        <Button disabled>Loading...</Button>
+        <Button disabled>{t.draw.loading}</Button>
       </div>
     );
   }
@@ -52,33 +54,32 @@ export function DrawActions() {
       {drawExists ? (
         <Dialog open={deleteAction.isOpen} onOpenChange={(open) => (open ? deleteAction.open() : deleteAction.close())}>
           <DialogTrigger render={<Button variant="destructive" />}>
-            Delete Draw
+            {t.draw.deleteDraw}
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Delete draw?</DialogTitle>
+              <DialogTitle>{t.draw.deleteDrawConfirm}</DialogTitle>
               <DialogDescription>
-                This will remove the current draw and all 144 matches. This
-                action cannot be undone.
+                {t.draw.deleteDrawDesc}
               </DialogDescription>
             </DialogHeader>
             <DialogFooter>
               <Button variant="outline" onClick={deleteAction.close}>
-                Cancel
+                {t.draw.cancel}
               </Button>
               <Button
                 variant="destructive"
                 onClick={deleteAction.confirm}
                 disabled={deleteAction.isPending}
               >
-                {deleteAction.isPending ? "Deleting..." : "Delete"}
+                {deleteAction.isPending ? t.draw.deleting : t.draw.delete}
               </Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
       ) : (
         <Button onClick={handleCreate} disabled={createMutation.isPending}>
-          {createMutation.isPending ? "Creating draw..." : "Execute Draw"}
+          {createMutation.isPending ? t.draw.creatingDraw : t.draw.executeDraw}
         </Button>
       )}
     </div>

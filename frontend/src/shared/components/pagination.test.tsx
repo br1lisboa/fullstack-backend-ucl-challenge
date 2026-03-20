@@ -1,10 +1,11 @@
 import { describe, it, expect, vi } from "vitest";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { screen, fireEvent } from "@testing-library/react";
+import { renderWithI18n } from "@/__tests__/test-utils";
 import { Pagination } from "./pagination";
 
 describe("Pagination", () => {
   it("should display page info", () => {
-    render(
+    renderWithI18n(
       <Pagination page={2} totalPages={5} total={100} onPageChange={() => {}} />
     );
 
@@ -14,7 +15,7 @@ describe("Pagination", () => {
 
   it("should call onPageChange with previous page", () => {
     const onPageChange = vi.fn();
-    render(
+    renderWithI18n(
       <Pagination page={3} totalPages={5} total={100} onPageChange={onPageChange} />
     );
 
@@ -24,7 +25,7 @@ describe("Pagination", () => {
 
   it("should call onPageChange with next page", () => {
     const onPageChange = vi.fn();
-    render(
+    renderWithI18n(
       <Pagination page={3} totalPages={5} total={100} onPageChange={onPageChange} />
     );
 
@@ -33,7 +34,7 @@ describe("Pagination", () => {
   });
 
   it("should disable Previous on first page", () => {
-    render(
+    renderWithI18n(
       <Pagination page={1} totalPages={5} total={100} onPageChange={() => {}} />
     );
 
@@ -41,7 +42,7 @@ describe("Pagination", () => {
   });
 
   it("should disable Next on last page", () => {
-    render(
+    renderWithI18n(
       <Pagination page={5} totalPages={5} total={100} onPageChange={() => {}} />
     );
 

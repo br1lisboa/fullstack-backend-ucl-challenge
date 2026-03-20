@@ -6,29 +6,34 @@ import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "./theme-toggle";
+import { LanguageSelector } from "./language-selector";
+import { useDictionary, useLocale } from "@/i18n/context";
 import { cn } from "@/lib/utils";
 
-const links = [
-  { href: "/", label: "Home" },
-  { href: "/matches", label: "Matches" },
-  { href: "/teams", label: "Teams" },
-  { href: "/draw", label: "Draw" },
-];
-
-function isActive(pathname: string, href: string) {
-  if (href === "/") return pathname === "/";
+function isActive(pathname: string, href: string, locale: string) {
+  const localePath = `/${locale}`;
+  if (href === `/${locale}`) return pathname === localePath;
   return pathname.startsWith(href);
 }
 
 export function Navbar() {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
+  const locale = useLocale();
+  const t = useDictionary();
+
+  const links = [
+    { href: `/${locale}`, label: t.nav.home },
+    { href: `/${locale}/matches`, label: t.nav.matches },
+    { href: `/${locale}/teams`, label: t.nav.teams },
+    { href: `/${locale}/draw`, label: t.nav.draw },
+  ];
 
   return (
     <nav className="sticky top-0 z-50 border-b border-border/50 bg-background/80 backdrop-blur-sm">
       <div className="mx-auto flex h-16 max-w-5xl items-center gap-8 px-4">
         <Link
-          href="/"
+          href={`/${locale}`}
           className="text-lg font-bold tracking-tight"
           onClick={() => setOpen(false)}
         >
@@ -43,7 +48,7 @@ export function Navbar() {
               href={link.href}
               className={cn(
                 "text-sm font-medium transition-colors hover:text-primary",
-                isActive(pathname, link.href)
+                isActive(pathname, link.href, locale)
                   ? "text-primary"
                   : "text-muted-foreground"
               )}
@@ -54,6 +59,7 @@ export function Navbar() {
         </div>
 
         <div className="ml-auto flex items-center gap-1">
+          <LanguageSelector />
           <ThemeToggle />
           {/* Mobile hamburger */}
           <Button
@@ -63,7 +69,7 @@ export function Navbar() {
             onClick={() => setOpen((prev) => !prev)}
           >
             {open ? <X className="size-4" /> : <Menu className="size-4" />}
-            <span className="sr-only">Menu</span>
+            <span className="sr-only">{t.nav.menu}</span>
           </Button>
         </div>
       </div>
@@ -85,7 +91,7 @@ export function Navbar() {
                   onClick={() => setOpen(false)}
                   className={cn(
                     "rounded-md px-3 py-2 text-sm font-medium transition-colors hover:bg-muted",
-                    isActive(pathname, link.href)
+                    isActive(pathname, link.href, locale)
                       ? "text-primary bg-muted"
                       : "text-muted-foreground"
                   )}

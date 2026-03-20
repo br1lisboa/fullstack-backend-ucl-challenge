@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { screen } from "@testing-library/react";
+import { renderWithI18n } from "@/__tests__/test-utils";
 import { TeamMatchesTable } from "./team-matches-table";
 import type { Match } from "@/shared/types";
 
@@ -20,21 +21,21 @@ const matches: Match[] = [
 
 describe("TeamMatchesTable", () => {
   it("should render opponents relative to teamId", () => {
-    render(<TeamMatchesTable matches={matches} teamId={1} />);
+    renderWithI18n(<TeamMatchesTable matches={matches} teamId={1} />);
 
     expect(screen.getByText("Bayern Munich")).toBeInTheDocument();
     expect(screen.getByText("Liverpool")).toBeInTheDocument();
   });
 
   it("should show Home/Away badges", () => {
-    render(<TeamMatchesTable matches={matches} teamId={1} />);
+    renderWithI18n(<TeamMatchesTable matches={matches} teamId={1} />);
 
     expect(screen.getByText("Home")).toBeInTheDocument();
     expect(screen.getByText("Away")).toBeInTheDocument();
   });
 
   it("should sort by matchDay ascending", () => {
-    render(<TeamMatchesTable matches={matches} teamId={1} />);
+    renderWithI18n(<TeamMatchesTable matches={matches} teamId={1} />);
 
     const rows = screen.getAllByRole("row");
     expect(rows[1]).toHaveTextContent("1");
@@ -42,7 +43,7 @@ describe("TeamMatchesTable", () => {
   });
 
   it("should show empty state when no matches", () => {
-    render(<TeamMatchesTable matches={[]} teamId={1} />);
+    renderWithI18n(<TeamMatchesTable matches={[]} teamId={1} />);
 
     expect(screen.getByText(/No matches yet/)).toBeInTheDocument();
   });
