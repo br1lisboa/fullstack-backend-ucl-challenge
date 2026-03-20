@@ -3,6 +3,7 @@ import type { Match, PaginatedResponse } from "@/shared/types";
 
 export interface MatchFilters {
   teamId?: string;
+  side?: string;
   matchDay?: number;
   matchDayFrom?: number;
   matchDayTo?: number;

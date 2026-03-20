@@ -9,6 +9,7 @@ export function useMatchFilters(): MatchFilters {
 
   return {
     teamId: searchParams.get("teamId") || undefined,
+    side: ["home", "away"].includes(searchParams.get("side") ?? "") ? searchParams.get("side")! : undefined,
     matchDay: searchParams.get("matchDay")
       ? Number(searchParams.get("matchDay"))
       : undefined,

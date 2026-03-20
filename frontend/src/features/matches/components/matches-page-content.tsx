@@ -21,7 +21,9 @@ export function MatchesPageContent() {
     <div className="flex max-h-[calc(100dvh-8rem)] flex-col gap-6">
       <div className="shrink-0 space-y-1">
         <div className="flex items-center justify-between">
-          <h1 className="text-3xl font-bold tracking-tight">{t.matches.title}</h1>
+          <h1 className="text-3xl font-bold tracking-tight">
+            {t.matches.title}
+          </h1>
           <button
             type="button"
             onClick={() => setFiltersOpen((prev) => !prev)}

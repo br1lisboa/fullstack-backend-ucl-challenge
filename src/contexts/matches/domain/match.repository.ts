@@ -2,6 +2,7 @@ import { MatchEntity } from "./match.entity";
 
 export interface MatchFilters {
   teamId?: number[];
+  side?: "home" | "away";
   matchDay?: number;
   matchDayFrom?: number;
   matchDayTo?: number;

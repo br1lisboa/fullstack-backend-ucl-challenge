@@ -14,6 +14,7 @@ import { ComboBox } from "@/components/ui/combo-box";
 import { useTeams } from "@/features/teams/hooks";
 import { useCountries } from "@/features/countries/hooks";
 import { useDictionary } from "@/i18n/context";
+import { XCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 function FilterControls() {
@@ -46,12 +47,14 @@ function FilterControls() {
 
   const hasFilters = qp.has(
     "teamId",
+    "side",
     "matchDay",
     "matchDayFrom",
     "matchDayTo",
     "countryId",
   );
 
+  const side = qp.get("side") || "all";
   const matchDay = qp.get("matchDay") || "all";
   const sortBy = qp.get("sortBy") || "matchDay";
   const sortOrder = qp.get("sortOrder") || "asc";
@@ -82,8 +85,25 @@ function FilterControls() {
         selected={selectedTeamIds}
         onChange={(vals) => qp.setMultiple("teamId", vals)}
         placeholder={t.matches.filterByTeam}
-        className="w-full sm:w-50"
+        className="w-full sm:w-46"
       />
+
+      <Select value={side} onValueChange={(v) => qp.set("side", v)}>
+        <SelectTrigger className="w-full sm:w-32">
+          <SelectValue placeholder={t.matches.allSides}>
+            {side === "all"
+              ? t.matches.allSides
+              : side === "home"
+                ? t.matches.homeOnly
+                : t.matches.awayOnly}
+          </SelectValue>
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="all">{t.matches.allSides}</SelectItem>
+          <SelectItem value="home">{t.matches.homeOnly}</SelectItem>
+          <SelectItem value="away">{t.matches.awayOnly}</SelectItem>
+        </SelectContent>
+      </Select>
 
       <Select value={matchDay} onValueChange={(v) => qp.set("matchDay", v)}>
         <SelectTrigger className="w-full sm:w-32">
@@ -106,7 +126,7 @@ function FilterControls() {
         selected={selectedCountryIds}
         onChange={(vals) => qp.setMultiple("countryId", vals)}
         placeholder={t.matches.filterByCountry}
-        className="w-full sm:w-52"
+        className="w-full sm:w-42"
       />
 
       <Select value={sortBy} onValueChange={(v) => qp.set("sortBy", v)}>
@@ -135,11 +155,15 @@ function FilterControls() {
         </SelectContent>
       </Select>
 
-      {hasFilters ? (
-        <Button variant="ghost" size="sm" onClick={qp.clear}>
-          {t.matches.clearFilters}
-        </Button>
-      ) : null}
+      <Button
+        variant="ghost"
+        size="icon"
+        onClick={qp.clear}
+        title={t.matches.clearFilters}
+        className={`size-9 shrink-0 rounded-full text-red-500 hover:bg-red-500/10 hover:text-red-600 ${!hasFilters ? "invisible" : ""}`}
+      >
+        <XCircle className="size-5" />
+      </Button>
     </div>
   );
 }
@@ -147,12 +171,10 @@ function FilterControls() {
 export function MatchFilters({ mobileOpen = false }: { mobileOpen?: boolean }) {
   return (
     <div className="shrink-0">
-      {/* Desktop: always visible */}
       <div className="hidden sm:block">
         <FilterControls />
       </div>
 
-      {/* Mobile: collapsible controlled by parent */}
       <div
         className={cn(
           "grid overflow-hidden transition-[grid-template-rows] duration-200 ease-out sm:hidden",

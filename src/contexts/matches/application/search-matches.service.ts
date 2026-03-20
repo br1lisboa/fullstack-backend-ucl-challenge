@@ -9,6 +9,7 @@ import {
 
 export interface SearchMatchesParams {
   teamId?: number | number[];
+  side?: "home" | "away";
   matchDay?: number;
   matchDayFrom?: number;
   matchDayTo?: number;
@@ -72,6 +73,7 @@ export class SearchMatchesService {
         ? params.teamId
         : [params.teamId];
     }
+    if (params.side) filters.side = params.side;
     if (params.matchDay) filters.matchDay = params.matchDay;
     if (params.matchDayFrom) filters.matchDayFrom = params.matchDayFrom;
     if (params.matchDayTo) filters.matchDayTo = params.matchDayTo;

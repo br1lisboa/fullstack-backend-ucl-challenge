@@ -25,6 +25,7 @@ matchesRouter.get(
 
       const result: SearchMatchesResponse = await searchMatchesService.run({
         teamId: parsed.teamId,
+        side: parsed.side,
         matchDay: parsed.matchDay,
         matchDayFrom: parsed.matchDayFrom,
         matchDayTo: parsed.matchDayTo,

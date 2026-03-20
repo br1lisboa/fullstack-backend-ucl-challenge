@@ -150,6 +150,51 @@ describe('SearchMatchesService', () => {
       );
     });
 
+    it('should filter by side=home with teamId', async () => {
+      vi.mocked(mockRepository.findAll).mockResolvedValue({
+        matches: [],
+        total: 0,
+      });
+
+      await service.run({ teamId: 1, side: 'home' });
+
+      expect(mockRepository.findAll).toHaveBeenCalledWith(
+        { teamId: [1], side: 'home' },
+        { page: 1, limit: 10 },
+        { sortBy: 'matchDay', sortOrder: 'asc' }
+      );
+    });
+
+    it('should filter by side=away with teamId', async () => {
+      vi.mocked(mockRepository.findAll).mockResolvedValue({
+        matches: [],
+        total: 0,
+      });
+
+      await service.run({ teamId: 5, side: 'away' });
+
+      expect(mockRepository.findAll).toHaveBeenCalledWith(
+        { teamId: [5], side: 'away' },
+        { page: 1, limit: 10 },
+        { sortBy: 'matchDay', sortOrder: 'asc' }
+      );
+    });
+
+    it('should not include side in filters when not provided', async () => {
+      vi.mocked(mockRepository.findAll).mockResolvedValue({
+        matches: [],
+        total: 0,
+      });
+
+      await service.run({ teamId: 1 });
+
+      expect(mockRepository.findAll).toHaveBeenCalledWith(
+        { teamId: [1] },
+        { page: 1, limit: 10 },
+        { sortBy: 'matchDay', sortOrder: 'asc' }
+      );
+    });
+
     it('should combine multiple filters', async () => {
       // Arrange
       const teamId = 10;

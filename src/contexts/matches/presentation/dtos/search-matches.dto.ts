@@ -33,6 +33,7 @@ export const SearchMatchesQuerySchema = z.object({
     .refine((val) => val === undefined || (val >= 1 && val <= 8), {
       message: "matchDayTo must be between 1 and 8",
     }),
+  side: z.enum(["home", "away"]).optional(),
   countryId: z
     .string()
     .optional()

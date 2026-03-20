@@ -21,19 +21,25 @@ export class PrismaMatchRepository
     pagination: PaginationParams,
     sort?: SortParams
   ): Promise<PaginatedMatches> {
-    const { teamId, matchDay, matchDayFrom, matchDayTo, countryId } = filters;
+    const { teamId, side, matchDay, matchDayFrom, matchDayTo, countryId } = filters;
     const { page, limit } = pagination;
 
     const where: any = {};
     const andConditions: any[] = [];
 
     if (teamId) {
-      andConditions.push({
-        OR: [
-          { homeTeamId: { in: teamId } },
-          { awayTeamId: { in: teamId } },
-        ],
-      });
+      if (side === "home") {
+        andConditions.push({ homeTeamId: { in: teamId } });
+      } else if (side === "away") {
+        andConditions.push({ awayTeamId: { in: teamId } });
+      } else {
+        andConditions.push({
+          OR: [
+            { homeTeamId: { in: teamId } },
+            { awayTeamId: { in: teamId } },
+          ],
+        });
+      }
     }
 
     if (matchDay) {
