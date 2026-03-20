@@ -14,6 +14,11 @@ import { CreateDrawService } from "../../contexts/draw/application/create-draw.s
 import { SearchCurrentDrawService } from "../../contexts/draw/application/search-current-draw.service.js";
 import { DrawStatisticsService } from "../../contexts/draw/application/draw-statistics.service.js";
 
+// Countries Context
+import { CountryRepository } from "../../contexts/countries/domain/country.repository.js";
+import { PrismaCountryRepository } from "../../contexts/countries/infrastructure/prisma-country.repository.js";
+import { SearchCountriesService } from "../../contexts/countries/application/search-countries.service.js";
+
 // Teams Context
 import { TeamRepository } from "../../contexts/teams/domain/team.repository.js";
 import { PrismaTeamRepository } from "../../contexts/teams/infrastructure/prisma-team.repository.js";
@@ -31,6 +36,10 @@ container.bind<DrawRepository>(TYPES.DrawRepository).to(PrismaDrawRepository);
 container.bind<CreateDrawService>(TYPES.CreateDrawService).to(CreateDrawService);
 container.bind<SearchCurrentDrawService>(TYPES.SearchCurrentDrawService).to(SearchCurrentDrawService);
 container.bind<DrawStatisticsService>(TYPES.DrawStatisticsService).to(DrawStatisticsService);
+
+// Countries Context Bindings
+container.bind<CountryRepository>(TYPES.CountryRepository).to(PrismaCountryRepository);
+container.bind<SearchCountriesService>(TYPES.SearchCountriesService).to(SearchCountriesService);
 
 // Teams Context Bindings
 container.bind<TeamRepository>(TYPES.TeamRepository).to(PrismaTeamRepository);

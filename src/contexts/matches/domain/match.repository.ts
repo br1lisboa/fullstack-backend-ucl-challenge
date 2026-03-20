@@ -1,11 +1,11 @@
 import { MatchEntity } from "./match.entity";
 
 export interface MatchFilters {
-  teamId?: number;
+  teamId?: number[];
   matchDay?: number;
   matchDayFrom?: number;
   matchDayTo?: number;
-  countryId?: number;
+  countryId?: number[];
 }
 
 export interface SortParams {

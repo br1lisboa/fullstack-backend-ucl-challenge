@@ -1,7 +1,9 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import { useTransition, useCallback } from "react";
+import { useTransition, useCallback, useMemo } from "react";
+
+const EMPTY_ARRAY: string[] = [];
 
 export function useQueryParams(basePath: string) {
   const router = useRouter();
@@ -54,10 +56,35 @@ export function useQueryParams(basePath: string) {
     });
   }, [basePath, router]);
 
+  const getAll = useCallback(
+    (key: string): string[] => {
+      const val = searchParams.get(key);
+      if (!val) return EMPTY_ARRAY;
+      return val.split(",").filter(Boolean);
+    },
+    [searchParams]
+  );
+
+  const setMultiple = useCallback(
+    (key: string, values: string[]) => {
+      const params = new URLSearchParams(searchParams.toString());
+      if (values.length > 0) {
+        params.set(key, values.join(","));
+      } else {
+        params.delete(key);
+      }
+      params.delete("page");
+      startTransition(() => {
+        router.push(`${basePath}?${params.toString()}`);
+      });
+    },
+    [searchParams, basePath, router]
+  );
+
   const has = useCallback(
     (...keys: string[]) => keys.some((k) => searchParams.has(k)),
     [searchParams]
   );
 
-  return { get, getNumber, set, setPage, clear, has, isPending };
+  return { get, getAll, getNumber, set, setMultiple, setPage, clear, has, isPending };
 }

@@ -1,12 +1,4 @@
-import { Suspense } from "react";
-import { Skeleton } from "@/components/ui/skeleton";
-import { TeamGrid } from "@/features/teams/components/team-grid";
-import { fetchTeams } from "@/features/teams/api";
-
-async function TeamsContent() {
-  const teams = await fetchTeams();
-  return <TeamGrid teams={teams} />;
-}
+import { TeamsPageContent } from "@/features/teams/components/teams-page-content";
 
 export default function TeamsPage() {
   return (
@@ -17,17 +9,7 @@ export default function TeamsPage() {
           36 teams grouped by pot.
         </p>
       </div>
-      <Suspense
-        fallback={
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {Array.from({ length: 9 }).map((_, i) => (
-              <Skeleton key={i} className="h-24 w-full" />
-            ))}
-          </div>
-        }
-      >
-        <TeamsContent />
-      </Suspense>
+      <TeamsPageContent />
     </div>
   );
 }

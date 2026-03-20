@@ -1,7 +1,7 @@
 import { injectable } from "inversify";
 import { PrismaRepository } from "../../../shared/infrastructure/prisma.repository.js";
 import { TeamEntity } from "../domain/team.entity.js";
-import { TeamRepository } from "../domain/team.repository.js";
+import { TeamRepository, TeamFilters } from "../domain/team.repository.js";
 
 @injectable()
 export class PrismaTeamRepository
@@ -10,8 +10,14 @@ export class PrismaTeamRepository
 {
   protected modelName = "Team" as const;
 
-  async findAll(): Promise<TeamEntity[]> {
+  async findAll(filters?: TeamFilters): Promise<TeamEntity[]> {
+    const where: any = {};
+    if (filters?.name) {
+      where.name = { contains: filters.name };
+    }
+
     const teams = await this.prisma.team.findMany({
+      where,
       include: { country: true },
       orderBy: { id: "asc" },
     });

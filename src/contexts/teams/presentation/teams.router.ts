@@ -9,14 +9,19 @@ const TeamIdSchema = z.object({
   id: z.string().transform((val) => parseInt(val, 10)).pipe(z.number().int().positive()),
 });
 
+const SearchTeamsQuerySchema = z.object({
+  name: z.string().optional(),
+});
+
 export const teamsRouter = Router();
 
 teamsRouter.get(
   "/teams",
-  async (_req: Request, res: Response, next: NextFunction) => {
+  async (req: Request, res: Response, next: NextFunction) => {
     try {
+      const query = SearchTeamsQuerySchema.parse(req.query);
       const service = container.get<SearchTeamsService>(TYPES.SearchTeamsService);
-      const teams = await service.run();
+      const teams = await service.run(query);
       return res.status(200).json(teams);
     } catch (error) {
       if (error instanceof Error) {

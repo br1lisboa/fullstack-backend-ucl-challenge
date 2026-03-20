@@ -62,7 +62,7 @@ describe("SearchTeamByIdService", () => {
 
     expect(mockTeamRepository.findById).toHaveBeenCalledWith(1);
     expect(mockMatchRepository.findAll).toHaveBeenCalledWith(
-      { teamId: 1 },
+      { teamId: [1] },
       { page: 1, limit: 100 }
     );
     expect(result).not.toBeNull();

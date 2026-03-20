@@ -8,11 +8,11 @@ import {
 } from "../domain/match.repository.js";
 
 export interface SearchMatchesParams {
-  teamId?: number;
+  teamId?: number | number[];
   matchDay?: number;
   matchDayFrom?: number;
   matchDayTo?: number;
-  countryId?: number;
+  countryId?: number | number[];
   sortBy?: "matchDay" | "homeTeam" | "awayTeam" | "id";
   sortOrder?: "asc" | "desc";
   page?: number;
@@ -67,11 +67,19 @@ export class SearchMatchesService {
     const limit = params.limit || 10;
 
     const filters: MatchFilters = {};
-    if (params.teamId) filters.teamId = params.teamId;
+    if (params.teamId) {
+      filters.teamId = Array.isArray(params.teamId)
+        ? params.teamId
+        : [params.teamId];
+    }
     if (params.matchDay) filters.matchDay = params.matchDay;
     if (params.matchDayFrom) filters.matchDayFrom = params.matchDayFrom;
     if (params.matchDayTo) filters.matchDayTo = params.matchDayTo;
-    if (params.countryId) filters.countryId = params.countryId;
+    if (params.countryId) {
+      filters.countryId = Array.isArray(params.countryId)
+        ? params.countryId
+        : [params.countryId];
+    }
 
     const pagination: PaginationParams = { page, limit };
 

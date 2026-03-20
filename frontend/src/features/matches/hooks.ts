@@ -8,9 +8,7 @@ export function useMatchFilters(): MatchFilters {
   const searchParams = useSearchParams();
 
   return {
-    teamId: searchParams.get("teamId")
-      ? Number(searchParams.get("teamId"))
-      : undefined,
+    teamId: searchParams.get("teamId") || undefined,
     matchDay: searchParams.get("matchDay")
       ? Number(searchParams.get("matchDay"))
       : undefined,
@@ -20,9 +18,7 @@ export function useMatchFilters(): MatchFilters {
     matchDayTo: searchParams.get("matchDayTo")
       ? Number(searchParams.get("matchDayTo"))
       : undefined,
-    countryId: searchParams.get("countryId")
-      ? Number(searchParams.get("countryId"))
-      : undefined,
+    countryId: searchParams.get("countryId") || undefined,
     sortBy: searchParams.get("sortBy") || undefined,
     sortOrder: searchParams.get("sortOrder") || undefined,
     page: searchParams.get("page") ? Number(searchParams.get("page")) : 1,

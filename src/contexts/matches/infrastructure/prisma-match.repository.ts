@@ -29,7 +29,10 @@ export class PrismaMatchRepository
 
     if (teamId) {
       andConditions.push({
-        OR: [{ homeTeamId: teamId }, { awayTeamId: teamId }],
+        OR: [
+          { homeTeamId: { in: teamId } },
+          { awayTeamId: { in: teamId } },
+        ],
       });
     }
 
@@ -44,8 +47,8 @@ export class PrismaMatchRepository
     if (countryId) {
       andConditions.push({
         OR: [
-          { homeTeam: { countryId } },
-          { awayTeam: { countryId } },
+          { homeTeam: { countryId: { in: countryId } } },
+          { awayTeam: { countryId: { in: countryId } } },
         ],
       });
     }

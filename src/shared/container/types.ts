@@ -14,6 +14,10 @@ export const TYPES = {
   SearchTeamsService: Symbol.for("SearchTeamsService"),
   SearchTeamByIdService: Symbol.for("SearchTeamByIdService"),
 
+  // Countries Context
+  CountryRepository: Symbol.for("CountryRepository"),
+  SearchCountriesService: Symbol.for("SearchCountriesService"),
+
   // Infrastructure
   PrismaClient: Symbol.for("PrismaClient"),
 };

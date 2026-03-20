@@ -32,7 +32,7 @@ export class SearchTeamByIdService {
     if (!team) return null;
 
     const { matches } = await this.matchRepository.findAll(
-      { teamId: id } as MatchFilters,
+      { teamId: [id] } as MatchFilters,
       { page: 1, limit: 100 } as PaginationParams
     );
 

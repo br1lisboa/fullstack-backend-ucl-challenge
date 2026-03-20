@@ -72,7 +72,7 @@ describe('SearchMatchesService', () => {
 
       // Assert
       expect(mockRepository.findAll).toHaveBeenCalledWith(
-        { teamId },
+        { teamId: [teamId] },
         { page: 1, limit: 10 },
         { sortBy: "matchDay", sortOrder: "asc" }
       );
@@ -167,7 +167,7 @@ describe('SearchMatchesService', () => {
 
       // Assert
       expect(mockRepository.findAll).toHaveBeenCalledWith(
-        { teamId, matchDay },
+        { teamId: [teamId], matchDay },
         { page: 3, limit: 15 },
         { sortBy: "matchDay", sortOrder: "asc" }
       );

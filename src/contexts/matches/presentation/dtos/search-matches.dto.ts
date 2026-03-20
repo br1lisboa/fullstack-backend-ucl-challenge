@@ -4,10 +4,14 @@ export const SearchMatchesQuerySchema = z.object({
   teamId: z
     .string()
     .optional()
-    .transform((val) => (val ? parseInt(val, 10) : undefined))
-    .refine((val) => val === undefined || val > 0, {
-      message: "Team ID must be greater than 0",
-    }),
+    .transform((val) => {
+      if (!val) return undefined;
+      return val.split(",").map((v) => parseInt(v.trim(), 10));
+    })
+    .refine(
+      (val) => val === undefined || val.every((v) => !isNaN(v) && v > 0),
+      { message: "Team ID must be greater than 0" }
+    ),
   matchDay: z
     .string()
     .optional()
@@ -32,10 +36,14 @@ export const SearchMatchesQuerySchema = z.object({
   countryId: z
     .string()
     .optional()
-    .transform((val) => (val ? parseInt(val, 10) : undefined))
-    .refine((val) => val === undefined || val > 0, {
-      message: "Country ID must be greater than 0",
-    }),
+    .transform((val) => {
+      if (!val) return undefined;
+      return val.split(",").map((v) => parseInt(v.trim(), 10));
+    })
+    .refine(
+      (val) => val === undefined || val.every((v) => !isNaN(v) && v > 0),
+      { message: "Country ID must be greater than 0" }
+    ),
   sortBy: z
     .enum(["matchDay", "homeTeam", "awayTeam", "id"])
     .optional()

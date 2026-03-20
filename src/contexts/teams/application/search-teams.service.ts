@@ -10,8 +10,10 @@ export class SearchTeamsService {
     private readonly teamRepository: TeamRepository
   ) {}
 
-  async run(): Promise<TeamPrimitives[]> {
-    const teams = await this.teamRepository.findAll();
+  async run(params?: { name?: string }): Promise<TeamPrimitives[]> {
+    const teams = await this.teamRepository.findAll(
+      params?.name ? { name: params.name } : undefined
+    );
     return teams.map((team) => team.toPrimitives());
   }
 }

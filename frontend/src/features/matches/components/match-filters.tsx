@@ -1,7 +1,7 @@
 "use client";
 
+import { useMemo } from "react";
 import { useQueryParams } from "@/shared/hooks/use-query-params";
-import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -10,9 +10,35 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
+import { ComboBox } from "@/components/ui/combo-box";
+import { useTeams } from "@/features/teams/hooks";
+import { useCountries } from "@/features/countries/hooks";
 
 export function MatchFilters() {
   const qp = useQueryParams("/matches");
+  const { data: teams } = useTeams();
+  const { data: countries } = useCountries();
+
+  const teamOptions = useMemo(
+    () =>
+      (teams ?? []).map((t) => ({
+        value: String(t.id),
+        label: t.name,
+      })),
+    [teams]
+  );
+
+  const countryOptions = useMemo(
+    () =>
+      (countries ?? []).map((c) => ({
+        value: String(c.id),
+        label: c.name,
+      })),
+    [countries]
+  );
+
+  const selectedTeamIds = qp.getAll("teamId");
+  const selectedCountryIds = qp.getAll("countryId");
 
   const hasFilters = qp.has(
     "teamId",
@@ -24,17 +50,16 @@ export function MatchFilters() {
 
   return (
     <div
-      className="flex flex-wrap items-end gap-3"
-      style={{ opacity: qp.isPending ? 0.7 : 1 }}
+      className={`flex flex-wrap items-end gap-3${qp.isPending ? " opacity-70" : ""}`}
     >
       <div className="space-y-1">
-        <label className="text-xs text-muted-foreground">Team ID</label>
-        <Input
-          type="number"
-          placeholder="e.g. 1"
-          className="w-24"
-          value={qp.get("teamId") || ""}
-          onChange={(e) => qp.set("teamId", e.target.value)}
+        <label className="text-xs text-muted-foreground">Teams</label>
+        <ComboBox
+          options={teamOptions}
+          selected={selectedTeamIds}
+          onChange={(vals) => qp.setMultiple("teamId", vals)}
+          placeholder="Search teams..."
+          className="w-52"
         />
       </div>
 
@@ -59,13 +84,13 @@ export function MatchFilters() {
       </div>
 
       <div className="space-y-1">
-        <label className="text-xs text-muted-foreground">Country ID</label>
-        <Input
-          type="number"
-          placeholder="e.g. 1"
-          className="w-24"
-          value={qp.get("countryId") || ""}
-          onChange={(e) => qp.set("countryId", e.target.value)}
+        <label className="text-xs text-muted-foreground">Countries</label>
+        <ComboBox
+          options={countryOptions}
+          selected={selectedCountryIds}
+          onChange={(vals) => qp.setMultiple("countryId", vals)}
+          placeholder="Search countries..."
+          className="w-52"
         />
       </div>
 

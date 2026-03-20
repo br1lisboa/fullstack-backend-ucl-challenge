@@ -2,11 +2,11 @@ import { apiFetch } from "@/shared/api-client";
 import type { Match, PaginatedResponse } from "@/shared/types";
 
 export interface MatchFilters {
-  teamId?: number;
+  teamId?: string;
   matchDay?: number;
   matchDayFrom?: number;
   matchDayTo?: number;
-  countryId?: number;
+  countryId?: string;
   sortBy?: string;
   sortOrder?: string;
   page?: number;

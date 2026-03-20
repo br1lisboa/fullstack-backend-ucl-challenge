@@ -1,6 +1,10 @@
 import { TeamEntity } from "./team.entity.js";
 
+export interface TeamFilters {
+  name?: string;
+}
+
 export interface TeamRepository {
-  findAll(): Promise<TeamEntity[]>;
+  findAll(filters?: TeamFilters): Promise<TeamEntity[]>;
   findById(id: number): Promise<TeamEntity | null>;
 }
