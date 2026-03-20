@@ -1,3 +1,5 @@
+"use client";
+
 import type { Match } from "@/shared/types";
 import { DataTable } from "@/shared/components/data-table";
 import { TeamLabel } from "@/shared/components/team-label";
