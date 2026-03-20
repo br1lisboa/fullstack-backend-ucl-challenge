@@ -1,5 +1,7 @@
 const isServer = typeof window === "undefined";
-const BASE_URL = isServer ? "http://localhost:8000" : "/api";
+const BASE_URL = isServer
+  ? process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"
+  : "/api";
 
 export class ApiError extends Error {
   constructor(
