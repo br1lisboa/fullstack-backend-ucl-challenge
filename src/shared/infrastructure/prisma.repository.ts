@@ -1,4 +1,4 @@
-import { PrismaClient, Prisma } from '@prisma';
+import { PrismaClient, Prisma } from '../../../generated/prisma/index.js';
 
 export abstract class PrismaRepository<TModelName extends Prisma.ModelName = any> {
   protected static prisma: PrismaClient;

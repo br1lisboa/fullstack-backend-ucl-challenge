@@ -1,7 +1,7 @@
 // Need to keep this to prevent issues with tests that cannot be modified
 import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3";
 import "dotenv/config";
-import { PrismaClient } from "@prisma";
+import { PrismaClient } from "../../generated/prisma/index.js";
 
 const connectionString = 'file:./dev.db';
 

@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma";
+import { PrismaClient } from "../../../generated/prisma/index.js";
 import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3";
 import { PrismaRepository } from "./prisma.repository.js";
 
