@@ -8,14 +8,14 @@ interface StatItemProps {
 
 function StatItem({ title, value }: StatItemProps) {
   return (
-    <Card>
-      <CardHeader className="pb-2">
-        <CardTitle className="text-sm font-medium text-muted-foreground">
+    <Card className="transition-shadow hover:shadow-md">
+      <CardHeader className="pb-1">
+        <CardTitle className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
           {title}
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <p className="text-2xl font-bold">{value}</p>
+        <p className="text-3xl font-bold tracking-tight">{value}</p>
       </CardContent>
     </Card>
   );
