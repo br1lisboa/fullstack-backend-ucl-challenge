@@ -1,6 +1,6 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, keepPreviousData } from "@tanstack/react-query";
 import { useSearchParams } from "next/navigation";
 import { fetchMatches, type MatchFilters } from "./api";
 
@@ -30,5 +30,6 @@ export function useMatches(filters: MatchFilters) {
   return useQuery({
     queryKey: ["matches", filters],
     queryFn: () => fetchMatches(filters),
+    placeholderData: keepPreviousData,
   });
 }
