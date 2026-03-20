@@ -1,7 +1,6 @@
 "use client";
 
-import { useRouter, useSearchParams } from "next/navigation";
-import { useTransition } from "react";
+import { useQueryParams } from "@/shared/hooks/use-query-params";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -13,40 +12,20 @@ import {
 import { Button } from "@/components/ui/button";
 
 export function MatchFilters() {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const [isPending, startTransition] = useTransition();
+  const qp = useQueryParams("/matches");
 
-  function updateParam(key: string, value: string | null) {
-    const params = new URLSearchParams(searchParams.toString());
-    if (value !== null && value !== "" && value !== "all") {
-      params.set(key, value);
-    } else {
-      params.delete(key);
-    }
-    params.delete("page");
-    startTransition(() => {
-      router.push(`/matches?${params.toString()}`);
-    });
-  }
-
-  function clearFilters() {
-    startTransition(() => {
-      router.push("/matches");
-    });
-  }
-
-  const hasFilters =
-    searchParams.has("teamId") ||
-    searchParams.has("matchDay") ||
-    searchParams.has("matchDayFrom") ||
-    searchParams.has("matchDayTo") ||
-    searchParams.has("countryId");
+  const hasFilters = qp.has(
+    "teamId",
+    "matchDay",
+    "matchDayFrom",
+    "matchDayTo",
+    "countryId"
+  );
 
   return (
     <div
       className="flex flex-wrap items-end gap-3"
-      style={{ opacity: isPending ? 0.7 : 1 }}
+      style={{ opacity: qp.isPending ? 0.7 : 1 }}
     >
       <div className="space-y-1">
         <label className="text-xs text-muted-foreground">Team ID</label>
@@ -54,16 +33,16 @@ export function MatchFilters() {
           type="number"
           placeholder="e.g. 1"
           className="w-24"
-          value={searchParams.get("teamId") || ""}
-          onChange={(e) => updateParam("teamId", e.target.value)}
+          value={qp.get("teamId") || ""}
+          onChange={(e) => qp.set("teamId", e.target.value)}
         />
       </div>
 
       <div className="space-y-1">
         <label className="text-xs text-muted-foreground">Match Day</label>
         <Select
-          value={searchParams.get("matchDay") || "all"}
-          onValueChange={(v) => updateParam("matchDay", v)}
+          value={qp.get("matchDay") || "all"}
+          onValueChange={(v) => qp.set("matchDay", v)}
         >
           <SelectTrigger className="w-28">
             <SelectValue />
@@ -85,16 +64,16 @@ export function MatchFilters() {
           type="number"
           placeholder="e.g. 1"
           className="w-24"
-          value={searchParams.get("countryId") || ""}
-          onChange={(e) => updateParam("countryId", e.target.value)}
+          value={qp.get("countryId") || ""}
+          onChange={(e) => qp.set("countryId", e.target.value)}
         />
       </div>
 
       <div className="space-y-1">
         <label className="text-xs text-muted-foreground">Sort By</label>
         <Select
-          value={searchParams.get("sortBy") || "matchDay"}
-          onValueChange={(v) => updateParam("sortBy", v)}
+          value={qp.get("sortBy") || "matchDay"}
+          onValueChange={(v) => qp.set("sortBy", v)}
         >
           <SelectTrigger className="w-32">
             <SelectValue />
@@ -111,8 +90,8 @@ export function MatchFilters() {
       <div className="space-y-1">
         <label className="text-xs text-muted-foreground">Order</label>
         <Select
-          value={searchParams.get("sortOrder") || "asc"}
-          onValueChange={(v) => updateParam("sortOrder", v)}
+          value={qp.get("sortOrder") || "asc"}
+          onValueChange={(v) => qp.set("sortOrder", v)}
         >
           <SelectTrigger className="w-24">
             <SelectValue />
@@ -125,7 +104,7 @@ export function MatchFilters() {
       </div>
 
       {hasFilters ? (
-        <Button variant="ghost" size="sm" onClick={clearFilters}>
+        <Button variant="ghost" size="sm" onClick={qp.clear}>
           Clear filters
         </Button>
       ) : null}

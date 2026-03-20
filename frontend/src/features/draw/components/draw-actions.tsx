@@ -1,6 +1,7 @@
 "use client";
 
 import { useCreateDraw, useDeleteDraw, useDraw } from "../hooks";
+import { useConfirmAction } from "@/shared/hooks/use-confirm-action";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -11,7 +12,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { useState } from "react";
 import { toast } from "sonner";
 import { ApiError } from "@/shared/api-client";
 
@@ -19,7 +19,12 @@ export function DrawActions() {
   const { data: draw, isLoading, error } = useDraw();
   const createMutation = useCreateDraw();
   const deleteMutation = useDeleteDraw();
-  const [deleteOpen, setDeleteOpen] = useState(false);
+
+  const deleteAction = useConfirmAction({
+    mutation: deleteMutation,
+    successMessage: "Draw deleted successfully",
+    errorMessage: "Failed to delete draw",
+  });
 
   const drawExists =
     !!draw && !(error instanceof ApiError && error.status === 404);
@@ -28,18 +33,9 @@ export function DrawActions() {
     createMutation.mutate(undefined, {
       onSuccess: () => toast.success("Draw created successfully"),
       onError: (err) =>
-        toast.error(err instanceof ApiError ? err.message : "Failed to create draw"),
-    });
-  }
-
-  function handleDelete() {
-    deleteMutation.mutate(undefined, {
-      onSuccess: () => {
-        toast.success("Draw deleted successfully");
-        setDeleteOpen(false);
-      },
-      onError: (err) =>
-        toast.error(err instanceof ApiError ? err.message : "Failed to delete draw"),
+        toast.error(
+          err instanceof ApiError ? err.message : "Failed to create draw"
+        ),
     });
   }
 
@@ -54,7 +50,7 @@ export function DrawActions() {
   return (
     <div className="flex gap-3">
       {drawExists ? (
-        <Dialog open={deleteOpen} onOpenChange={setDeleteOpen}>
+        <Dialog open={deleteAction.isOpen} onOpenChange={(open) => (open ? deleteAction.open() : deleteAction.close())}>
           <DialogTrigger render={<Button variant="destructive" />}>
             Delete Draw
           </DialogTrigger>
@@ -67,15 +63,15 @@ export function DrawActions() {
               </DialogDescription>
             </DialogHeader>
             <DialogFooter>
-              <Button variant="outline" onClick={() => setDeleteOpen(false)}>
+              <Button variant="outline" onClick={deleteAction.close}>
                 Cancel
               </Button>
               <Button
                 variant="destructive"
-                onClick={handleDelete}
-                disabled={deleteMutation.isPending}
+                onClick={deleteAction.confirm}
+                disabled={deleteAction.isPending}
               >
-                {deleteMutation.isPending ? "Deleting..." : "Delete"}
+                {deleteAction.isPending ? "Deleting..." : "Delete"}
               </Button>
             </DialogFooter>
           </DialogContent>

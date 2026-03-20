@@ -1,64 +1,54 @@
 import type { Match } from "@/shared/types";
+import { DataTable } from "@/shared/components/data-table";
+import { TeamLabel } from "@/shared/components/team-label";
 import { Badge } from "@/components/ui/badge";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 
 interface TeamMatchesTableProps {
   matches: Match[];
   teamId: number;
 }
 
-export function TeamMatchesTable({ matches, teamId }: TeamMatchesTableProps) {
-  if (matches.length === 0) {
-    return (
-      <p className="text-sm text-muted-foreground">
-        No matches yet. Execute a draw first.
-      </p>
-    );
-  }
+interface MatchWithVenue extends Match {
+  opponent: Match["homeTeam"];
+  isHome: boolean;
+}
 
-  const sorted = matches.toSorted((a, b) => a.matchDay - b.matchDay);
+export function TeamMatchesTable({ matches, teamId }: TeamMatchesTableProps) {
+  const rows: MatchWithVenue[] = matches
+    .toSorted((a, b) => a.matchDay - b.matchDay)
+    .map((m) => {
+      const isHome = m.homeTeam.id === teamId;
+      return {
+        ...m,
+        opponent: isHome ? m.awayTeam : m.homeTeam,
+        isHome,
+      };
+    });
 
   return (
-    <Table>
-      <TableHeader>
-        <TableRow>
-          <TableHead className="w-16">Day</TableHead>
-          <TableHead>Opponent</TableHead>
-          <TableHead className="w-20">Venue</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {sorted.map((match) => {
-          const isHome = match.homeTeam.id === teamId;
-          const opponent = isHome ? match.awayTeam : match.homeTeam;
-
-          return (
-            <TableRow key={match.id}>
-              <TableCell>
-                <Badge variant="outline">{match.matchDay}</Badge>
-              </TableCell>
-              <TableCell>
-                <span className="font-medium">{opponent.name}</span>
-                <span className="ml-2 text-xs text-muted-foreground">
-                  {opponent.country.name}
-                </span>
-              </TableCell>
-              <TableCell>
-                <Badge variant={isHome ? "default" : "secondary"}>
-                  {isHome ? "Home" : "Away"}
-                </Badge>
-              </TableCell>
-            </TableRow>
-          );
-        })}
-      </TableBody>
-    </Table>
+    <DataTable<MatchWithVenue>
+      data={rows}
+      empty="No matches yet. Execute a draw first."
+      keyExtractor={(m) => m.id}
+    >
+      <DataTable.Column<MatchWithVenue>
+        header="Day"
+        className="w-16"
+        render={(m) => <Badge variant="outline">{m.matchDay}</Badge>}
+      />
+      <DataTable.Column<MatchWithVenue>
+        header="Opponent"
+        render={(m) => <TeamLabel team={m.opponent} />}
+      />
+      <DataTable.Column<MatchWithVenue>
+        header="Venue"
+        className="w-20"
+        render={(m) => (
+          <Badge variant={m.isHome ? "default" : "secondary"}>
+            {m.isHome ? "Home" : "Away"}
+          </Badge>
+        )}
+      />
+    </DataTable>
   );
 }

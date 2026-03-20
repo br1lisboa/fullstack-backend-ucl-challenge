@@ -1,5 +1,7 @@
 import "reflect-metadata";
+import "dotenv/config";
 import cookieParser from "cookie-parser";
+import cors from "cors";
 import express, { Express } from "express";
 import logger from "morgan";
 import path, { dirname } from "path";
@@ -16,6 +18,13 @@ const app: Express = express();
 // view engine setup
 app.set("view engine", "jade");
 
+app.use(
+  cors({
+    origin: process.env.CORS_ORIGIN || "http://localhost:3000",
+    methods: ["GET", "POST", "DELETE"],
+    allowedHeaders: ["Content-Type"],
+  })
+);
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
