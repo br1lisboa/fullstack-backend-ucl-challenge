@@ -3,12 +3,13 @@ import "dotenv/config";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import express, { Express } from "express";
-import logger from "morgan";
+import pinoHttp from "pino-http";
 import path, { dirname } from "path";
 import { fileURLToPath } from "url";
 import { initializeDatabase } from "./src/shared/infrastructure/database.js";
 import { registerRoutes } from "./src/shared/infrastructure/routes.js";
 import { registerSwagger } from "./src/shared/infrastructure/swagger.js";
+import { logger } from "./src/shared/infrastructure/logger.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -25,7 +26,7 @@ app.use(
     allowedHeaders: ["Content-Type"],
   })
 );
-app.use(logger("dev"));
+app.use(pinoHttp({ logger }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());

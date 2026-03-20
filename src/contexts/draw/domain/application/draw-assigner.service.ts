@@ -1,5 +1,6 @@
 import { Team } from "../team";
 import { Match } from "../match";
+import { logger } from "../../../../shared/infrastructure/logger.js";
 
 const MAX_MATCHES = 8;
 const MAX_HOME = 4;
@@ -45,9 +46,7 @@ export class DrawService {
         return result;
       }
 
-      if (attempt < 10) {
-        console.warn(`Attempt ${attempt + 1} failed, retrying...`);
-      }
+      logger.warn({ attempt: attempt + 1, matchesGenerated: result.length }, "Draw generation attempt failed, retrying");
     }
 
     throw new Error(`Could not generate a valid draw after ${MAX_RETRY_ATTEMPTS} attempts`);

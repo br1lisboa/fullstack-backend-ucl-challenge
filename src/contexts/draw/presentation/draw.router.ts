@@ -6,6 +6,7 @@ import { SearchCurrentDrawService } from "../application/search-current-draw.ser
 import { DrawStatisticsService } from "../application/draw-statistics.service.js";
 import { DrawAlreadyExistsError } from "../domain/exceptions/draw-already-exists.error.js";
 import { DrawRepository } from "../domain/draw.repository.js";
+import { logger } from "../../../shared/infrastructure/logger.js";
 
 export const drawRouter = Router();
 
@@ -18,12 +19,15 @@ drawRouter.post(
       );
       await drawService.run();
 
+      logger.info("Draw created successfully");
       return res.status(201).json({ message: "Draw created successfully" });
     } catch (error) {
       if (error instanceof DrawAlreadyExistsError) {
+        logger.warn("Attempted to create draw when one already exists");
         return res.status(409).send("Draw already exists");
       }
       if (error instanceof Error) {
+        logger.error({ err: error }, "Failed to create draw");
         return res.status(400).json({ message: error.message });
       }
       next(error);
@@ -97,6 +101,7 @@ drawRouter.delete(
       );
       await drawRepository.deleteAll();
 
+      logger.info("Draw deleted successfully");
       return res.status(200).json({ message: "Draw deleted successfully" });
     } catch (error) {
       if (error instanceof Error) {
