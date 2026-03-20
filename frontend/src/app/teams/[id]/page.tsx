@@ -2,8 +2,8 @@ import { notFound } from "next/navigation";
 import { fetchTeamById } from "@/features/teams/api";
 import { TeamMatchesTable } from "@/features/teams/components/team-matches-table";
 import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
 import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
 import { ApiError } from "@/shared/api-client";
 
 export default async function TeamDetailPage({
@@ -27,22 +27,23 @@ export default async function TeamDetailPage({
   const { team, matches } = data;
 
   return (
-    <div className="space-y-6">
-      <div>
+    <div className="space-y-8">
+      <div className="space-y-3">
         <Link
           href="/teams"
-          className="text-sm text-muted-foreground hover:text-foreground"
+          className="inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-primary"
         >
-          &larr; Back to Teams
+          <ArrowLeft className="size-3.5" />
+          Back to Teams
         </Link>
-        <h1 className="mt-2 text-2xl font-bold">{team.name}</h1>
-        <Badge variant="outline" className="mt-1">
-          {team.country.name}
-        </Badge>
+        <div className="flex items-center gap-3">
+          <h1 className="text-3xl font-bold tracking-tight">{team.name}</h1>
+          <Badge variant="secondary">{team.country.name}</Badge>
+        </div>
       </div>
-      <Separator />
+
       <div>
-        <h2 className="mb-3 text-lg font-semibold">
+        <h2 className="mb-4 text-sm font-medium tracking-wide text-muted-foreground uppercase">
           Matches ({matches.length})
         </h2>
         <TeamMatchesTable matches={matches} teamId={team.id} />
